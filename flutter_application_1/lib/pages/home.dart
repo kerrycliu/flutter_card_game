@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'single_player.dart';
+import 'multiplayer.dart';
+import 'options.dart';
+import 'profile.dart';
 //import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatelessWidget {
@@ -7,11 +11,11 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: main_main_Stack(),
+      body: Main_Stack(context),
     );
   }
 
-  Stack main_main_Stack() {
+  Stack Main_Stack(BuildContext context) {
     return Stack( //stack, layer elements on top of the other
       children: [
         Container(//container for the background image
@@ -33,13 +37,46 @@ class HomePage extends StatelessWidget {
             // for 4 cards
             // height : 
             // width : 
-            CardButton("images/Cards/Spades/Rank=A, Suit=Spades.png", 'Single', 'Player'), //Single Player Card
 
-            CardButton("images/Cards/Clubs/Rank=A, Suit=Clubs.png", 'Multi', 'Player'), //Multi Player Card
+            GestureDetector(
+              onTap: () {
+                Navigator.push( 
+                  context,
+                  MaterialPageRoute(builder: ((context) => const SinglePlayer())),
+                );
+              },
+              child : CardButton("images/Cards/Spades/Rank=A, Suit=Spades.png", 'Single', 'Player'), //Single Player Card
+            ),
 
-            CardButton("images/Cards/Hearts/Rank=A, Suit=Heart.png", 'Options', 'Options'), //Options Card
+            GestureDetector(
+              onTap: () {
+                Navigator.push( 
+                  context,
+                  MaterialPageRoute(builder: ((context) => const MultiPlayer())),
+                );
+              },
+              child : CardButton("images/Cards/Clubs/Rank=A, Suit=Clubs.png", 'Multi', 'Player'), //Multi Player Card
+            ),
 
-            CardButton("images/Cards/Diamonds/Rank=A, Suit=Diamond.png", 'Profile', 'Profile'), //Profile Card
+            GestureDetector(
+              onTap: () {
+                Navigator.push( 
+                  context,
+                  MaterialPageRoute(builder: ((context) => const Options())),
+                );
+              },
+              child : CardButton("images/Cards/Hearts/Rank=A, Suit=Heart.png", 'Options', 'Options'), //Options Card
+            ),
+
+            GestureDetector(
+              onTap: () {
+                Navigator.push( 
+                  context,
+                  MaterialPageRoute(builder: ((context) => const Profile())),
+                );
+              },
+              child : CardButton("images/Cards/Diamonds/Rank=A, Suit=Diamond.png", 'Profile', 'Profile'), //Profile Card
+            ),
 
           ]
         ),
