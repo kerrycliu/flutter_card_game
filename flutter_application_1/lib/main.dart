@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/pages/home.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/pages/splash_screen.dart';
 //import 'package:google_fonts/google_fonts.dart';
 //import 'package:location/location.dart';
 
@@ -20,7 +20,7 @@ class myApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: SplashScreen(),
     );
   }
 }
