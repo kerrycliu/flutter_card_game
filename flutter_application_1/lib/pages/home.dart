@@ -8,7 +8,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          Container(
+          Container(//container for the background image
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("images/background.png"),
