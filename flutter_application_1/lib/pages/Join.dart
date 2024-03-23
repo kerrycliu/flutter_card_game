@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Options extends StatelessWidget {
-  const Options({super.key});
+class Join extends StatelessWidget {
+  const Join({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
       body : Text(
-        "Options Screen \n Ima kiss a tree at 100mph",
+        "Single Player Screen \n Built with both the air and constitution of a Victorian Noblity",
         style: TextStyle(
           color: Colors.black, 
           fontSize: 50,
@@ -16,5 +16,4 @@ class Options extends StatelessWidget {
       ),
     );
   }
-    
 }
