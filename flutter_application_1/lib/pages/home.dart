@@ -97,7 +97,7 @@ class HomePage extends StatelessWidget {
                         width : 138.75,//width of the card
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.white, width : 3.6),
-                          image: DecorationImage(
+                          image: const DecorationImage(
                             image: AssetImage("images/Cards/Clubs/Rank=A, Suit=Clubs.png"),
                             fit : BoxFit.cover,
                             ),
@@ -154,7 +154,7 @@ class HomePage extends StatelessWidget {
                         width : 138.75,//width of the card
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.white, width : 3.6),
-                          image: DecorationImage(
+                          image: const DecorationImage(
                             image: AssetImage("images/Cards/Hearts/Rank=A, Suit=Heart.png"),
                             fit : BoxFit.cover,
                             ),
@@ -211,7 +211,7 @@ class HomePage extends StatelessWidget {
                         width : 138.75,//width of the card
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.white, width : 3.6),
-                          image: DecorationImage(
+                          image: const DecorationImage(
                             image: AssetImage("images/Cards/Diamonds/Rank=A, Suit=Diamond.png"),
                             fit : BoxFit.cover,
                             ),
