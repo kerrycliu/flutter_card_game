@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/pages/splash_screen.dart';
-//import 'package:google_fonts/google_fonts.dart';
-//import 'package:location/location.dart';
+import 'package:location/location.dart';
 
 void main(List<String> args) {
   WidgetsFlutterBinding.ensureInitialized();//initialized app preferred orientiation
