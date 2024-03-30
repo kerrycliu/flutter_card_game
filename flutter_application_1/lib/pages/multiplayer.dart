@@ -25,15 +25,15 @@ class MultiPlayer extends StatelessWidget {
           ),
         ),
 
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: ((context) => const HomePage())),
-            );
-          },
-          child: Back_button(),
-        ),
+        // GestureDetector(
+        //   onTap: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: ((context) => const HomePage())),
+        //     );
+        //   },
+        //   child: Back_button(),//fix this for the background to be fixed
+        // ),
 
         Row(//buttons
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -65,10 +65,9 @@ class MultiPlayer extends StatelessWidget {
     );
   }
 
-  Positioned Back_button() {
-    return Positioned(
-      top: 10,
-      left: 10,
+  AppBar Back_button() {
+    return AppBar (
+      leading: Container(
         child: Container(//container for the background image
           height: 50,
           width: 50,
@@ -79,7 +78,8 @@ class MultiPlayer extends StatelessWidget {
             ),
           ),
         ),
-      );
+      )
+    );
   }
 
   Column CardButton(String cardImage, String topText, String bottomText) {

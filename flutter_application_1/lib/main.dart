@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/pages/splash_screen.dart';
 import 'package:location/location.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 
 void main(List<String> args) {
   WidgetsFlutterBinding.ensureInitialized();//initialized app preferred orientiation
