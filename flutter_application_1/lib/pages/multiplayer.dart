@@ -25,15 +25,15 @@ class MultiPlayer extends StatelessWidget {
           ),
         ),
 
-        // GestureDetector(
-        //   onTap: () {
-        //     Navigator.push(
-        //       context,
-        //       MaterialPageRoute(builder: ((context) => const HomePage())),
-        //     );
-        //   },
-        //   child: Back_button(),//fix this for the background to be fixed
-        // ),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: ((context) => const HomePage())),
+            );
+          },
+          child: Back_button(),//fix this for the background to be fixed
+        ),
 
         Row(//buttons
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -65,18 +65,20 @@ class MultiPlayer extends StatelessWidget {
     );
   }
 
-  AppBar Back_button() {
-    return AppBar (
-      leading: Container(
-        child: Container(//container for the background image
-          height: 50,
+  Align Back_button() {
+    return Align (
+      alignment: Alignment.topLeft,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
           width: 50,
+          height: 50,
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("images/Go_Back.png"),
               fit : BoxFit.cover,
-            ),
-          ),
+            )
+          )
         ),
       )
     );
