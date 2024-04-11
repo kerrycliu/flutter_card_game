@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/game_board.dart';
 
 class SinglePlayer extends StatelessWidget {
   const SinglePlayer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body : Text(
-        "Single Player Screen \n The sexual tension between me and a bullet is insane",
-        style: TextStyle(
-          color: Colors.black, 
-          fontSize: 50,
-          fontFamily: 'RedRose',
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: const Text("Gaming"),
+            actions: [
+              TextButton(
+                onPressed: () {},
+                child: const Text(
+                  "New Game",
+                  style: TextStyle(color: Colors.white),
+                )
+              )
+            ],
+          ),
+          body: const GameBoard(),
         ),
-      ),
+      ],
     );
   }
 }
