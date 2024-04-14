@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget {
                   MaterialPageRoute(builder: ((context) => const Options())),
                 );
               },
-              child : CardButton("images/Cards/Hearts/Rank=A, Suit=Heart.png", 'Options', 'Options'), //Options Card
+              child : CardButton("images/Cards/Heart/Rank=A, Suit=Heart.png", 'Options', 'Options'), //Options Card
             ),
 
             GestureDetector(
@@ -75,7 +75,7 @@ class HomePage extends StatelessWidget {
                   MaterialPageRoute(builder: ((context) => const Profile())),
                 );
               },
-              child : CardButton("images/Cards/Diamonds/Rank=A, Suit=Diamond.png", 'Profile', 'Profile'), //Profile Card
+              child : CardButton("images/Cards/Diamond/Rank=A, Suit=Diamond.png", 'Profile', 'Profile'), //Profile Card
             ),
 
           ]
