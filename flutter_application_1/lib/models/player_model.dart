@@ -17,17 +17,39 @@ class Player {
     hand.remove(card);
   }
 
-  // Method to get the number of cards in the player's hand
+  // Function to get the number of cards in the player's hand
   int getHandSize() {
     return hand.length;
   }
 
-  // Method to get the player's hand as a string
+  // Function to get the player's hand as a string
   String getHandAsString() {
     String handString = "";
     for (CardModel card in hand) {
       handString += "${card.value} of ${card.suit}, ";
     }
     return handString.substring(0, handString.length - 2);
+  }
+
+  // Function to remove two cards with the same value from the hand
+  void removeAllPairs() {
+    while (true) {
+      List<CardModel> cardsToRemove = [];
+      for (int i = 0; i < hand.length - 1; i++) {
+        for (int j = i + 1; j < hand.length; j++) {
+          if (hand[i].value == hand[j].value) {
+            cardsToRemove.add(hand[i]);
+            cardsToRemove.add(hand[j]);
+            break;
+          }
+        }
+      }
+      if (cardsToRemove.isEmpty) {
+        break;
+      }
+      for (CardModel card in cardsToRemove) {
+        hand.remove(card);
+      }
+    }
   }
 }

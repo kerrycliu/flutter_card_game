@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/deck_model.dart';
 import 'package:flutter_application_1/models/player_model.dart';
@@ -33,8 +31,13 @@ class _GameBoardState extends State<GameBoard> {
     deck.shuffle();
 
     //deal cards
-    for (int i = 0; i < deck.cards.length; i++) {
+    for(int i = 0; i < deck.cards.length; i++){
       players[i % 4].addCardToHand(deck.cards[i]);
+    }
+
+    //remove pairs from hand
+    for(int i = 0; i < players.length; i++ ){
+      players[i].removeAllPairs();
     }
   }
 
