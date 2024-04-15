@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/deck_model.dart';
 import 'package:flutter_application_1/models/player_model.dart';
@@ -38,18 +40,13 @@ class _GameBoardState extends State<GameBoard> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      heightFactor: 200,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Hand(hand : players[0].hand),
-          Hand(hand : players[1].hand),
-          Hand(hand : players[2].hand),
-          Hand(hand : players[3].hand),
-        ],
-      ),
+    return ListView(
+      children: [
+        Hand(hand : players[0].hand),
+        Hand(hand : players[1].hand),
+        Hand(hand : players[2].hand),
+        Hand(hand : players[3].hand),
+      ],
     );
   }
 }
@@ -77,9 +74,11 @@ class CardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 50,
-      height: 175,
-      //margin: EdgeInsets.all(5),
+      width: 55,
+      height: 210,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white, width : 0.6),
+      ),
       child: Image.asset(card.imagePath),
     );
   }
