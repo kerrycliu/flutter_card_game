@@ -1,3 +1,5 @@
+import 'dart:math';
+
 // Define a class for a single card
 class CardModel {
   final String imagePath; // Image path for the card
@@ -29,10 +31,25 @@ class Deck {
     //add a joker to the deck
     cards.add(CardModel(imagePath: "images/Cards/Joker.png", suit: 'Joker', value: 'Joker'));
   }
-}
 
-// Example usage:
-void main() {
-  Deck deck = Deck();
-  print(deck.cards[0].imagePath); // Example accessing the image path of the first card in the deck
+  //function to shuffle the deck
+  void shuffle(){
+    Random rand = new Random();
+    for(int i = 0; i < cards.length; i++) {
+      int j = rand.nextInt(i+1);
+      CardModel temp = cards[i];
+      cards[i] = cards[j];
+      cards[j] = temp;
+    }
+  }
+
+  //function to remove cards form the deck
+  void removeCard(int i){
+    if(i >= 0 && i < cards.length){
+      cards.removeAt(i);
+    }
+    else {
+      throw Exception("Index out of range");
+    }
+  }
 }
