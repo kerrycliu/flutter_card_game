@@ -7,7 +7,7 @@ class Host extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body : Text(
-        "Single Player Screen \n I hate my life",
+        "Host Screen \nTemp Text",
         style: TextStyle(
           color: Colors.black, 
           fontSize: 50,

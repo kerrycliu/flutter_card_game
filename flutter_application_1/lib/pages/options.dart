@@ -6,13 +6,24 @@ class Options extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body : Text(
-        "Options Screen \n Ima kiss a tree at 100mph",
-        style: TextStyle(
-          color: Colors.black, 
-          fontSize: 50,
-          fontFamily: 'RedRose',
-        ),
+      body : Column(
+        children: [
+          Text(
+            "Options Screen \nTemp Text",
+            style: TextStyle(
+              color: Colors.black, 
+              fontSize: 50,
+              fontFamily: 'RedRose',
+            ),
+          ),
+          Text(
+            "Location : ",
+            style: TextStyle(
+              color: Colors.black, 
+              fontSize: 50,
+            ),
+          ),
+        ],
       ),
     );
   }

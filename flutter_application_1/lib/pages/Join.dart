@@ -7,7 +7,7 @@ class Join extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body : Text(
-        "Single Player Screen \n Built with both the air and constitution of a Victorian Noblity",
+        "Join Screen \nTemp Text",
         style: TextStyle(
           color: Colors.black, 
           fontSize: 50,

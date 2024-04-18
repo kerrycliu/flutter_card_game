@@ -7,7 +7,7 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body : Text(
-        "Profile Screen \n Someone end me",
+        "Profile Screen \nTemp Text",
         style: TextStyle(
           color: Colors.black, 
           fontSize: 50,

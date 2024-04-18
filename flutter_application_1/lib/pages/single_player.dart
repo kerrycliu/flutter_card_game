@@ -15,7 +15,7 @@ class SinglePlayer extends StatelessWidget {
               TextButton(
                 onPressed: () {},
                 child: const Text(
-                  "New Game",
+                  "Testing Game",
                   style: TextStyle(color: Colors.white),
                 )
               )
