@@ -14,10 +14,10 @@ class _GameBoardState extends State<GameBoard> {
   late Deck deck;
 
   List<Player> players = [
-    Player(hand: [], isBot: true),
-    Player(hand: [], isBot: true),
-    Player(hand: [], isBot: true),
-    Player(hand: [], isBot: true),
+    Player(hand: [], isBot: true, name: "Bot1",),
+    Player(hand: [], isBot: true, name: "Bot2",),
+    Player(hand: [], isBot: true, name: "Bot3",),
+    Player(hand: [], isBot: true, name: "Bot4",),
   ];
 
   @override

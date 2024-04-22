@@ -6,7 +6,6 @@ import 'package:flutter_application_1/pages/splash_screen.dart';
 import 'package:location/location.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-
 void main(List<String> args) {
   WidgetsFlutterBinding.ensureInitialized();//initialized app preferred orientiation
   SystemChrome.setPreferredOrientations([//set app to only be in landscape mode
