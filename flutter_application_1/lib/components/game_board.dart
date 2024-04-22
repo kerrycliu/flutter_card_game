@@ -63,7 +63,6 @@ class Hand extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: hand.map((card) => CardWidget(card: card)).toList(),
     );
   }
