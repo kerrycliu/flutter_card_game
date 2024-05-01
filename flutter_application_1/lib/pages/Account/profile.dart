@@ -11,7 +11,6 @@ class Profile extends StatelessWidget {
         style: TextStyle(
           color: Colors.black,
           fontSize: 50,
-          fontFamily: 'RedRose',
         ),
       ),
     );

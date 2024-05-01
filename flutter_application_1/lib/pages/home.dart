@@ -2,10 +2,11 @@
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/pages/Account/login_screen.dart';
 import 'single_player.dart';
-import 'multiplayer.dart';
+import 'Multi/multiplayer.dart';
 import 'options.dart';
-import 'profile.dart';
+import 'Account/profile.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -88,7 +89,7 @@ class HomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: ((context) => const Profile())),
+                    MaterialPageRoute(builder: ((context) => const loginScreen())),
                   );
                 },
                 child: CardButton(
