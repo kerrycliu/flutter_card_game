@@ -13,12 +13,11 @@ class SinglePlayer extends StatelessWidget {
             title: const Text("Gaming"),
             actions: [
               TextButton(
-                onPressed: () {},
-                child: const Text(
-                  "Testing Game",
-                  style: TextStyle(color: Colors.white),
-                )
-              )
+                  onPressed: () {},
+                  child: const Text(
+                    "Testing Game",
+                    style: TextStyle(color: Colors.white),
+                  ))
             ],
           ),
           body: const GameBoard(),

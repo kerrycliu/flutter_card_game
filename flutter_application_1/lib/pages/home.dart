@@ -56,7 +56,8 @@ class HomePage extends StatelessWidget {
 
               GestureDetector(
                 onTap: () async {
-                  final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
+                  final List<ConnectivityResult> connectivityResult =
+                      await (Connectivity().checkConnectivity());
                   if (connectivityResult.contains(ConnectivityResult.mobile) ||
                       connectivityResult.contains(ConnectivityResult.wifi)) {
                     Navigator.push(
@@ -100,7 +101,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-Column CardButton(String cardImage, String topText, String bottomText) {
+  Column CardButton(String cardImage, String topText, String bottomText) {
     return Column(
       //single player button
       mainAxisAlignment: MainAxisAlignment.center,
@@ -166,7 +167,8 @@ void _showDialog(BuildContext context) {
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Text("No Internet Connection"),
-        content: const Text("Please connect to the internet to play multiplayer."),
+        content:
+            const Text("Please connect to the internet to play multiplayer."),
         actions: <Widget>[
           ElevatedButton(
             child: const Text("OK"),

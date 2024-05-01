@@ -72,7 +72,7 @@ class _OptionsState extends State<Options> {
             } else {
               return Center(
                 child: ElevatedButton(
-                  child: Text('Grant Permission'),
+                  child: const Text('Grant Permission'),
                   onPressed: () async {
                     await Geolocator.requestPermission();
                     setState(() {});
@@ -90,16 +90,19 @@ class _OptionsState extends State<Options> {
 
   Future<bool> _checkPermission() async {
     final permission = await Geolocator.checkPermission();
-    return permission == LocationPermission.always || permission == LocationPermission.whileInUse;
+    return permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse;
   }
 
   Future<Position> getUserLocation() async {
-    final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     return position;
   }
 
   Future<List<Placemark>> _getAddressFromLatLng(Position position) async {
-    final placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    final placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     return placemarks;
   }
 }

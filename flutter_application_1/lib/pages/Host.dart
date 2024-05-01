@@ -6,10 +6,10 @@ class Host extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body : Text(
+      body: Text(
         "Host Screen \nTemp Text",
         style: TextStyle(
-          color: Colors.black, 
+          color: Colors.black,
           fontSize: 50,
           fontFamily: 'RedRose',
         ),
