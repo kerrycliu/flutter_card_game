@@ -76,7 +76,7 @@ class HomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: ((context) => const Options())),
+                    MaterialPageRoute(builder: ((context) => Options())),
                   );
                 },
                 child: CardButton("images/Cards/Heart/Rank=A, Suit=Heart.png",

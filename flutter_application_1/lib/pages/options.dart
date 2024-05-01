@@ -3,13 +3,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class Options extends StatefulWidget {
-  const Options({super.key});
-
   @override
-  State<Options> createState() => _OptionsState();
+  _OptionsState createState() => _OptionsState();
 }
 
 class _OptionsState extends State<Options> {
+  bool _hasPermission = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,42 +19,50 @@ class _OptionsState extends State<Options> {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
-            if (snapshot.data!) {
+            _hasPermission = snapshot.data!;
+            if (_hasPermission) {
               return FutureBuilder<Position>(
                 future: getUserLocation(),
                 builder: (context, positionSnapshot) {
                   if (positionSnapshot.hasError) {
                     return Text('Error: ${positionSnapshot.error}');
                   } else if (positionSnapshot.hasData) {
-                    return FutureBuilder<List<Placemark>>(
-                      future: _getAddressFromLatLng(positionSnapshot.data!),
-                      builder: (context, addressSnapshot) {
-                        if (addressSnapshot.hasError) {
-                          return Text('Error: ${addressSnapshot.error}');
-                        } else if (addressSnapshot.hasData) {
-                          final placemark = addressSnapshot.data!.first;
-                          return Column(
-                            children: [
-                              const Text(
-                                "Options Screen Testing",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 45,
-                                ),
-                              ),
-                              Text(
-                                'Location: ${placemark.street}, ${placemark.subLocality}, ${placemark.locality}, ${placemark.administrativeArea}',
+                    return Column(
+                      children: [
+                        const Text(
+                          "Options Screen \nTemp Text",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 30,
+                          ),
+                        ),
+                        Text(
+                          'Precise Location: ${positionSnapshot.data!.latitude}, ${positionSnapshot.data!.longitude}',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 30,
+                          ),
+                        ),
+                        FutureBuilder<List<Placemark>>(
+                          future: _getAddressFromLatLng(positionSnapshot.data!),
+                          builder: (context, addressSnapshot) {
+                            if (addressSnapshot.hasError) {
+                              return Text('Error: ${addressSnapshot.error}');
+                            } else if (addressSnapshot.hasData) {
+                              final placemark = addressSnapshot.data!.first;
+                              return Text(
+                                'Address: ${placemark.street}, ${placemark.subLocality}, ${placemark.locality}, ${placemark.administrativeArea}',
                                 style: const TextStyle(
                                   color: Colors.black,
-                                  fontSize: 45,
+                                  fontSize: 30,
                                 ),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return const CircularProgressIndicator();
-                        }
-                      },
+                              );
+                            } else {
+                              return const CircularProgressIndicator();
+                            }
+                          },
+                        ),
+                      ],
                     );
                   } else {
                     return const CircularProgressIndicator();
