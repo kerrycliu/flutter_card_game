@@ -1,7 +1,6 @@
-// ignore_for_file: camel_case_types
+// ignore_for_file: camel_case_types, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class loginScreen extends StatefulWidget {
   const loginScreen({super.key});
@@ -12,8 +11,8 @@ class loginScreen extends StatefulWidget {
 
 class _loginScreenState extends State<loginScreen> {
 
-  TextEditingController _passwordTextController = TextEditingController();
-  TextEditingController _emailTextController = TextEditingController();
+  final TextEditingController _passwordTextController = TextEditingController();
+  final TextEditingController _emailTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -30,25 +29,34 @@ class _loginScreenState extends State<loginScreen> {
 
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(200, MediaQuery.of(context).size.height * 0.5, 200, 50),
+                padding: EdgeInsets.fromLTRB(250, MediaQuery.of(context).size.height * 0.25, 250, 30),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
+                    
+                    const Padding (
+                      padding: EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: 5
+                      ),
+                    ),
                     reuseableTextField("Enter Username", Icons.person_outline, false, _emailTextController),
-                    const Padding (
-                      padding: EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        height: 10
-                      ),
-                    ),
                 
-                    reuseableTextField("Enter Password", Icons.lock_outline, true, _passwordTextController),
                     const Padding (
                       padding: EdgeInsets.all(8.0),
                       child: SizedBox(
-                        height: 10
+                        height: 5
                       ),
                     ),
+                    reuseableTextField("Enter Password", Icons.lock_outline, true, _passwordTextController),
+
+                    const Padding (
+                      padding: EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: 10,
+                      ),
+                    ),
+                    LoginSigninButton(context, true, (){}),
                   ],
                 ),
               ),
@@ -57,6 +65,40 @@ class _loginScreenState extends State<loginScreen> {
         ),
       ],
     );
+  }
+
+  Container LoginSigninButton(BuildContext context, bool isLogin, Function onTap) {
+    return Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 50,
+                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(90),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        onTap();
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith((states) {
+                          if(states.contains(MaterialState.pressed)) {
+                            return Colors.black;
+                          }
+                          return Colors.white;
+                        }),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))
+                        )
+                      ),
+                      child: Text(
+                        isLogin ? 'Login' : 'Sign Up',
+                        style: const TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold, fontSize: 10,
+                        ),
+                      ),
+
+                    ),
+                  );
   }
 }
 
