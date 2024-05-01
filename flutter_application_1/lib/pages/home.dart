@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'single_player.dart';
 import 'multiplayer.dart';
 import 'options.dart';
 import 'profile.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -41,15 +38,11 @@ class HomePage extends StatelessWidget {
             // width : 
 
             GestureDetector(
-              onTap: () async {
-                if (await isConnected()) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: ((context) => const SinglePlayer())),
-                  );
-                } else {
-                  showNoConnectionPrompt(context);
-                }
+              onTap: () {
+                Navigator.push( 
+                  context,
+                  MaterialPageRoute(builder: ((context) => const SinglePlayer())),
+                );
               },
               child: CardButton("images/Cards/Spades/Rank=A, Suit=Spades.png", 'Single', 'Player'), //Single Player Card
             ),
@@ -149,41 +142,4 @@ class HomePage extends StatelessWidget {
             ],
           );
   }
-}
-
-final Connectivity connectivity = Connectivity();
-
-Future<bool> isConnected() async {
-  final List<ConnectivityResult> result = await connectivity.checkConnectivity();
-  if (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) {
-    try {
-      final List<InternetAddress> result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        return true;
-      }
-    } on SocketException catch (_) {
-      return false;
-    }
-  }
-  return false;
-}
-
-void showNoConnectionPrompt(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text('No internet connection'),
-        content: Text('Please connect to a network to continue.'),
-        actions: [
-          TextButton(
-            child: Text('OK'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      );
-    },
-  );
 }
