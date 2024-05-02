@@ -6,7 +6,6 @@ import 'package:flutter_application_1/pages/Account/login_screen.dart';
 import 'single_player.dart';
 import 'Multi/multiplayer.dart';
 import 'options.dart';
-import 'Account/profile.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "815882749064",
+    "project_id": "kards-c7448",
+    "storage_bucket": "kards-c7448.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:815882749064:android:1d9519fb0988a37c8ecb3d",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXAEWCWsUrSY3CN8YmEJzfRVDmNh-h9LE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
