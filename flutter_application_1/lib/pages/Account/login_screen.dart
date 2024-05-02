@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/Account/profile.dart';
 
@@ -54,10 +55,16 @@ class _loginScreenState extends State<loginScreen> {
                       ),
                     ),
                     LoginSigninButton(context, true, () {
-                      Navigator.push(
+                      FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: _emailTextController.text,
+                          password: _passwordTextController.text).then((value) {
+                            Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const Profile()));
+                          }).onError((error, stackTrace){
+                            print("Error ${error.toString()}");
+                          });
                     }),
                     signUpOption(),
                   ],

@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/Account/profile.dart';
 
@@ -24,8 +25,7 @@ class _signUpPageState extends State<signUpPage> {
         title: const Text(
           "Sign Up",
           style: TextStyle(
-            fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white
-          ),
+              fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
       body: Container(
@@ -47,39 +47,42 @@ class _signUpPageState extends State<signUpPage> {
                   padding: EdgeInsets.all(8.0),
                   child: SizedBox(height: 5),
                 ),
-
-
-                reuseableTextField("Enter Email", Icons.person_outline,
-                    false, _emailTextController),
+                reuseableTextField("Enter Email", Icons.person_outline, false,
+                    _emailTextController),
                 const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: SizedBox(height: 5),
                 ),
-
-                reuseableTextField("Enter Username", Icons.lock_outline,
-                    false, _userNameTextController),
+                reuseableTextField("Enter Username", Icons.lock_outline, false,
+                    _userNameTextController),
                 const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: SizedBox(
                     height: 10,
                   ),
                 ),
-
-
-                reuseableTextField("Enter Password", Icons.lock_outline,
-                    true, _passwordTextController),
+                reuseableTextField("Enter Password", Icons.lock_outline, true,
+                    _passwordTextController),
                 const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: SizedBox(
                     height: 10,
                   ),
                 ),
-
-
                 LoginSigninButton(context, false, () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const Profile()));
+                  FirebaseAuth.instance
+                      .createUserWithEmailAndPassword(
+                          email: _emailTextController.text,
+                          password: _passwordTextController.text)
+                      .then((value) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Profile()));
+                  }).onError((error, stackTrace) {
+                    print("Error ${error.toString()}");
+                  });
                 }),
-    
               ],
             ),
           ),
@@ -88,7 +91,7 @@ class _signUpPageState extends State<signUpPage> {
     );
   }
 
-Container LoginSigninButton(
+  Container LoginSigninButton(
       BuildContext context, bool isLogin, Function onTap) {
     return Container(
       width: MediaQuery.of(context).size.width,

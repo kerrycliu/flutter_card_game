@@ -2,11 +2,19 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/pages/home.dart';
 import 'package:flutter_application_1/pages/splash_screen.dart';
 
-void main(List<String> args) {
-  WidgetsFlutterBinding.ensureInitialized();//initialized app preferred orientiation
-  SystemChrome.setPreferredOrientations([//set app to only be in landscape mode
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyAXAEWCWsUrSY3CN8YmEJzfRVDmNh-h9LE",
+          appId: '1:815882749064:android:1d9519fb0988a37c8ecb3d',
+          messagingSenderId: 'sendid',
+          projectId: "kards-c7448",)
+          );
+  SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
@@ -20,7 +28,7 @@ class myApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: HomePage(),
     );
   }
 }
