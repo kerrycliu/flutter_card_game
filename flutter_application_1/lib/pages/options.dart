@@ -30,7 +30,7 @@ class _OptionsState extends State<Options> {
                     return Column(
                       children: [
                         const Text(
-                          "Options Screen \nTemp Text",
+                          "Temp Options Screen \nLocation testing / debugging",
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 30,

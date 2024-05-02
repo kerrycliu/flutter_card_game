@@ -22,10 +22,16 @@ class _signUpPageState extends State<signUpPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         title: const Text(
           "Sign Up",
           style: TextStyle(
-              fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+            fontSize: 24, 
+            fontWeight: FontWeight.bold, 
+            color: Colors.white
+          ),
         ),
       ),
       body: Container(
