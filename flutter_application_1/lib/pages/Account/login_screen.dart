@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/pages/Account/profile.dart';
 
 import 'signup_screen.dart';
 
@@ -38,7 +39,7 @@ class _loginScreenState extends State<loginScreen> {
                       padding: EdgeInsets.all(8.0),
                       child: SizedBox(height: 5),
                     ),
-                    reuseableTextField("Enter Username", Icons.person_outline,
+                    reuseableTextField("Enter Email", Icons.person_outline,
                         false, _emailTextController),
                     const Padding(
                       padding: EdgeInsets.all(8.0),
@@ -52,8 +53,12 @@ class _loginScreenState extends State<loginScreen> {
                         height: 10,
                       ),
                     ),
-                    LoginSigninButton(context, true, () {}),
-
+                    LoginSigninButton(context, true, () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Profile()));
+                    }),
                     signUpOption(),
                   ],
                 ),
@@ -75,8 +80,8 @@ class _loginScreenState extends State<loginScreen> {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => const signUpPage()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const signUpPage()));
           },
           child: const Text(
             " Sign Up",
