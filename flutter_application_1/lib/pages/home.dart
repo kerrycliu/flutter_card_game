@@ -4,6 +4,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/Account/login_screen.dart';
+import 'package:flutter_application_1/pages/reuseable.dart';
 import 'single_player.dart';
 import 'Multi/multiplayer.dart';
 import 'options.dart';
@@ -98,65 +99,6 @@ class HomePage extends StatelessWidget {
                     'Profile'), //Profile Card
               ),
             ]),
-      ],
-    );
-  }
-
-  Column CardButton(String cardImage, String topText, String bottomText) {
-    return Column(
-      //single player button
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Stack(children: <Widget>[
-          Container(
-            //card background
-            height: 189.75, //height of the card
-            width: 138.75, //width of the card
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.white, width: 3.6),
-              image: DecorationImage(
-                image: AssetImage(cardImage),
-                fit: BoxFit.cover,
-              ),
-            ),
-
-            child: ColorFiltered(
-              //adjust the color of the image
-              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.5),
-                  BlendMode.darken), //darken the image
-              child: Image(
-                image: AssetImage(cardImage),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Positioned(
-            //Top text
-            top: 7,
-            right: 10,
-            child: Text(
-              topText,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24.75,
-                fontFamily: 'RedRose',
-              ),
-            ),
-          ),
-          Positioned(
-            //Buttom text
-            bottom: 7,
-            left: 10,
-            child: Text(
-              bottomText,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24.75,
-                fontFamily: 'RedRose',
-              ),
-            ),
-          ),
-        ]),
       ],
     );
   }

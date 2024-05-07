@@ -31,9 +31,17 @@ class _SplashScreenState extends State<SplashScreen>
       body: Container(
         //container for the background image
         decoration: const BoxDecoration(
+          color: Color.fromRGBO(184, 170, 255, 100),
           image: DecorationImage(
-            image: AssetImage("images/SplashPage.png"),
-            fit: BoxFit.cover,
+            image: AssetImage("images/Splash_logo.png"),
+            fit: BoxFit.fitWidth,
+          ),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.fromLTRB(75, 50, 75, 225),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: LinearProgressIndicator(),
           ),
         ),
       ),
