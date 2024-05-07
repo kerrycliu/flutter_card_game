@@ -10,32 +10,31 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen>
-  with SingleTickerProviderStateMixin{
-
-    @override
+    with SingleTickerProviderStateMixin {
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
-    Future.delayed(const Duration(seconds: 2), () {//delay for 2 screens and then move to the main page
+    Future.delayed(const Duration(seconds: 3), () {
+      //delay for 2 screens and then move to the main page
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => const HomePage(),
-        )
-      );
+      ));
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body : Container(//container for the background image
+      body: Container(
+        //container for the background image
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage("images/SplashPage.png"),
-            fit : BoxFit.cover,
-            ),
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
