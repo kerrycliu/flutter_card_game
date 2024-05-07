@@ -10,8 +10,8 @@ Column CardButton(String cardImage, String topText, String bottomText) {
         Stack(children: <Widget>[
           Container(
             //card background
-            height: 189.75, //height of the card
-            width: 138.75, //width of the card
+            height: 210, //height of the card
+            width: 145, //width of the card
             decoration: BoxDecoration(
               border: Border.all(color: Colors.white, width: 3.6),
               image: DecorationImage(
@@ -39,7 +39,6 @@ Column CardButton(String cardImage, String topText, String bottomText) {
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 24.75,
-                fontFamily: 'RedRose',
               ),
             ),
           ),
@@ -52,7 +51,6 @@ Column CardButton(String cardImage, String topText, String bottomText) {
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 24.75,
-                fontFamily: 'RedRose',
               ),
             ),
           ),
