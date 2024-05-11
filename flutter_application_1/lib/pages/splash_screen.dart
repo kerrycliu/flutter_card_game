@@ -5,6 +5,8 @@ import 'package:flutter_application_1/pages/home.dart';
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
+  static const String route = '/splash_screen';
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }

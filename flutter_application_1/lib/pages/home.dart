@@ -2,7 +2,6 @@
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/pages/Account/login_screen.dart';
 import 'package:flutter_application_1/pages/reuseable.dart';
 import 'single_player.dart';

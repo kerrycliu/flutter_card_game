@@ -8,6 +8,7 @@ import 'Join.dart';
 
 class MultiPlayer extends StatelessWidget {
   const MultiPlayer({super.key});
+  static const String route = '/multiplayer';
 
   @override
   Widget build(BuildContext context) {
