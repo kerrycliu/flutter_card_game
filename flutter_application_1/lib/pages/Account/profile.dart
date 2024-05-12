@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/Account/login_screen.dart';
 
@@ -12,8 +12,8 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  late User? _user;
+  var db = FirebaseFirestore.instance;
+  String? _username;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class _ProfileState extends State<Profile> {
       ),
       body: Stack(
         children: [
-          Container(
+          Container(//background image
             decoration: const BoxDecoration(
               color: Color.fromRGBO(77, 0, 153, 1),
               image: DecorationImage(
@@ -45,102 +45,80 @@ class _ProfileState extends State<Profile> {
               ),
             ),
           ),
-          FutureBuilder(
-            future: _getUser(),
+
+          Padding(
+            padding: const EdgeInsets.all(65.0),
+            child: Container(
+              height: 189.75, // height of the card
+              width: 138.75, // width of the card
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    "images/Cards/Joker.png"
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+
+          //display username
+          FutureBuilder<String?>(
+            future: _getUsername(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                _user = snapshot.data;
+                _username = snapshot.data;
                 return Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // user icon
-                    Padding(
-                      padding: const EdgeInsets.all(65.0),
-                      child: Container(
-                        height: 189.75, // height of the card
-                        width: 138.75, // width of the card
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                              "images/Cards/Joker.png"
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
+                    // Display the username here
                     Text(
-                      _user!.displayName?? "Username Temp Text",
+                      _username ?? '',
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Text(
-                      "Location Temp Text",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Text(
-                      "Friends Temp Text",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Container(
-                      height: 450,
-                      decoration: const BoxDecoration(
-                        color: Colors.black,
-                      ),
-                      child: const SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Text(
-                              "Friend1 Temp Text",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            //...
-                          ],
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: ElevatedButton(
-                        child: const Text("Logout"),
-                        onPressed: () {
-                          _auth.signOut().then((value) {
-                            print("Signed Out");
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const loginScreen()));
-                          });
-                        },
-                      ),
-                    ),
+                    // Add other widgets here
                   ],
                 );
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
               } else {
-                return const Center(child: CircularProgressIndicator());
+                return const CircularProgressIndicator();
               }
             },
+          ),
+
+          Center(
+            child: ElevatedButton(
+              child: const Text("Logout"),
+              onPressed: () {
+                _auth.signOut().then((value) {
+                  print("Signed Out");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const loginScreen()));
+                }
+              );
+              },
+            ),
           ),
         ],
       ),
     );
   }
 
-  Future<User?> _getUser() async {
-    return _auth.currentUser;
+  Future<String?> _getUsername() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final doc = await db.collection('users').doc(user.uid).get();
+      if (doc.exists) {
+        return doc.data()?['username'];
+      }
+    }
+    return null;
   }
 }

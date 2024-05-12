@@ -2,8 +2,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/api/firebase_api.dart';
-import 'package:flutter_application_1/pages/home.dart';
-//import 'package:flutter/services.dart';
 import 'package:flutter_application_1/pages/splash_screen.dart';
 
 import 'pages/Multi/multiplayer.dart';

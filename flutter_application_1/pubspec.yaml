@@ -48,6 +48,7 @@ dependencies:
   firebase_auth: ^4.19.4
   flutterfire_cli: ^1.0.1-dev.0
   firebase_messaging: ^14.9.2
+  cloud_firestore: ^4.17.3
 dev_dependencies:
 
   flutter_test:

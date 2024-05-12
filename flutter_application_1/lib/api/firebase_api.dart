@@ -1,7 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_application_1/pages/Multi/multiplayer.dart';
 import 'package:flutter_application_1/pages/splash_screen.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -35,11 +34,16 @@ Future initPushNotifications() async {
 
 class FirebaseAPi {
   final _firebaseMessaging = FirebaseMessaging.instance;
+  String? _fcmToken;
 
   Future<void> initNotification () async{
     await _firebaseMessaging.requestPermission();
-    final fCMToken = await _firebaseMessaging.getToken();
-    print('Token : $fCMToken');
+    _fcmToken = await _firebaseMessaging.getToken();
+    print('Token : $_fcmToken');
     initPushNotifications();
+  }
+
+  String? getFCMToken() {
+    return _fcmToken;
   }
 }
