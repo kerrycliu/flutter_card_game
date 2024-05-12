@@ -21,18 +21,33 @@ class _loginScreenState extends State<loginScreen> {
     return Stack(
       children: [
         Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: const IconThemeData(
+              color: Colors.white,
+            ),
+            title: const Text(
+              "Login",
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+          ),
           body: Container(
             decoration: const BoxDecoration(
               color: Color.fromRGBO(77, 0, 153, 1),
               image: DecorationImage(
                 image: AssetImage("images/login_bg.png"),
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
             ),
             child: SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(
-                    250, MediaQuery.of(context).size.height * 0.25, 250, 30),
+                    50, 250, 50, MediaQuery.of(context).size.height),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -55,16 +70,18 @@ class _loginScreenState extends State<loginScreen> {
                       ),
                     ),
                     LoginSigninButton(context, true, () {
-                      FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text).then((value) {
-                            Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Profile()));
-                          }).onError((error, stackTrace){
-                            print("Error ${error.toString()}");
-                          });
+                      FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                              email: _emailTextController.text,
+                              password: _passwordTextController.text)
+                          .then((value) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Profile()));
+                      }).onError((error, stackTrace) {
+                        print("Error ${error.toString()}");
+                      });
                     }),
                     signUpOption(),
                   ],

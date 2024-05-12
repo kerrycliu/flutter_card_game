@@ -20,17 +20,17 @@ class _signUpPageState extends State<signUpPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white.withOpacity(0.35),
         elevation: 0,
         iconTheme: const IconThemeData(
-          color: Colors.white,
+          color: Colors.black,
         ),
         title: const Text(
           "Sign Up",
           style: TextStyle(
-            fontSize: 24, 
-            fontWeight: FontWeight.bold, 
-            color: Colors.white
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
         ),
       ),
@@ -45,7 +45,7 @@ class _signUpPageState extends State<signUpPage> {
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.fromLTRB(
-                250, MediaQuery.of(context).size.height * 0.20, 250, 30),
+                50, 250, 50, MediaQuery.of(context).size.height),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -81,10 +81,13 @@ class _signUpPageState extends State<signUpPage> {
                           email: _emailTextController.text,
                           password: _passwordTextController.text)
                       .then((value) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Profile()));
+                    User? user = value.user;
+                    if (user != null) {
+                      user.updateDisplayName(
+                          _userNameTextController.text);
+                    }
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Profile()));
                   }).onError((error, stackTrace) {
                     print("Error ${error.toString()}");
                   });
