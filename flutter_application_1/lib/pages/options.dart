@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/pages/home.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -137,9 +138,10 @@ class _OptionsState extends State<Options> {
             ),
           ),
 
-          Center(
+          Padding(
+            padding: EdgeInsets.fromLTRB(10, 100, 10, 10),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
@@ -161,11 +163,14 @@ class _OptionsState extends State<Options> {
                   ),
                 ),
                 _buildLocationAddressText(),
-                SizedBox(height: 50),
+                SizedBox(height: 40),
                 _buildGetLocationButton(),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(55, 5, 55, 5),
+                  padding: const EdgeInsets.fromLTRB(55, 20, 55, 5),
                   child: TextField(
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
                     onChanged: (value) {
                       _currentAddress = value;
                     },

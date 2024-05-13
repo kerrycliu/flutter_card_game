@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/Account/profile.dart';
 import 'package:flutter_application_1/pages/reuseable.dart';
@@ -18,6 +19,12 @@ class _signUpPageState extends State<signUpPage> {
   final TextEditingController _passwordTextController = TextEditingController();
   final TextEditingController _emailTextController = TextEditingController();
   final TextEditingController _userNameTextController = TextEditingController();
+
+  Future<String?> _getfcmToken() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    String? fcmToken = await messaging.getToken();
+    return fcmToken;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,11 +90,17 @@ class _signUpPageState extends State<signUpPage> {
                       .createUserWithEmailAndPassword(
                           email: _emailTextController.text,
                           password: _passwordTextController.text)
-                      .then((value) {
+                      .then((value) async {
                     final user = <String, String>{
                       "username" : _userNameTextController.text,
                       "email" : _emailTextController.text,
+                      "password" : _passwordTextController.text,
                     };
+
+                    String? fcmToken = await _getfcmToken();
+                    if(fcmToken != null) {
+                      user["fcm_token"] = fcmToken;
+                    }
 
                     db.collection("users").doc(value.user!.uid).set(user);
                     Navigator.push(context,

@@ -1,8 +1,6 @@
-// profile.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/pages/Account/login_screen.dart';
 import 'package:flutter_application_1/pages/home.dart';
 import 'package:flutter_application_1/pages/reuseable.dart';
@@ -19,6 +17,8 @@ class _ProfileState extends State<Profile> {
   var db = FirebaseFirestore.instance;
   String? _username;
   List<String> _friends = [];
+
+  final TextEditingController _friendTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -120,12 +120,12 @@ class _ProfileState extends State<Profile> {
                           "Enter Friend's Username",
                           Icons.account_box_outlined,
                           false,
-                          TextEditingController(),
+                          _friendTextController,
                         ),
                       ),
                       ElevatedButton(
                         onPressed: () async {
-                          final friendUsername = TextEditingController().text;
+                          final friendUsername = _friendTextController.text;
                           final friendDoc = await db
                               .collection("users")
                               .where("username", isEqualTo: friendUsername)
@@ -140,13 +140,15 @@ class _ProfileState extends State<Profile> {
                               "username": _username as String,
                             };
                             await db
-                                .collection("friends")
+                                .collection("users")
                                 .doc(currentUser!.uid)
-                                .set(friend);
-                            await db
                                 .collection("friends")
+                                .add(friend);
+                            await db
+                                .collection("users")
                                 .doc(friendUid)
-                                .set(current);
+                                .collection("friends")
+                                .add(current);
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content: Text("Friend added successfully")));
