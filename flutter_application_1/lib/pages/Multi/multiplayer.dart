@@ -34,7 +34,7 @@ class MultiPlayer extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: ((context) => const HomePage())),
+              MaterialPageRoute(builder: ((context) => HomePage())),
             );
           },
           child: Back_button(), //fix this for the background to be fixed

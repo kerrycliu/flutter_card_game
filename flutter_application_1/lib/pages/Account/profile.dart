@@ -1,7 +1,9 @@
+// profile.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/Account/login_screen.dart';
+import 'package:flutter_application_1/pages/home.dart';
 import 'package:flutter_application_1/pages/reuseable.dart';
 
 class Profile extends StatefulWidget {
@@ -15,6 +17,7 @@ class _ProfileState extends State<Profile> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   var db = FirebaseFirestore.instance;
   String? _username;
+  List<String> _friends = [];
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +36,12 @@ class _ProfileState extends State<Profile> {
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
+        ),
+        leading: BackButton(
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => HomePage()));
+          },
         ),
       ),
       body: Stack(
@@ -63,50 +72,100 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
               ),
-              FutureBuilder<String?>(
-                future: _getUsername(),
+              StreamBuilder<String?>(
+                stream: _getUsernameStream(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     _username = snapshot.data;
-                    TextEditingController _friendUsernameTextController =
-                        TextEditingController();
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Display the username here
-                        Text(
-                          _username ?? '',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        // Add other widgets here
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            height: 10,
-                          ),
-                        ),
-                        reuseableTextField(
-                            "Enter Friend's Username",
-                            Icons.account_box_outlined,
-                            false,
-                            _friendUsernameTextController),
-
-                        addFriendButton(_friendUsernameTextController, context),
-
-                      ],
+                    return Text(
+                      _username ?? '',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     );
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
                   } else {
                     return const CircularProgressIndicator();
                   }
                 },
               ),
-
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Text("Friends",style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold)
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _friends.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: EdgeInsets.all(2),
+                        child: ListTile(
+                          title: Text(
+                            _friends[index],
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(50, 10, 50, 20),
+                child: Column(
+                  children: [
+                    reuseableTextField(
+                      "Enter Friend's Username",
+                      Icons.account_box_outlined,
+                      false,
+                      TextEditingController(),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final friendUsername = TextEditingController().text;
+                        final friendDoc = await db
+                            .collection("users")
+                            .where("username", isEqualTo: friendUsername)
+                            .get();
+                        if (friendDoc.docs.isNotEmpty) {
+                          final friendUid = friendDoc.docs.first.id;
+                          final currentUser = _auth.currentUser;
+                          final friend = <String, String>{
+                            "username": friendUsername,
+                          };
+                          final current = <String, String>{
+                            "username": _username as String,
+                          };
+                          await db
+                              .collection("friends")
+                              .doc(currentUser!.uid)
+                              .set(friend);
+                          await db
+                              .collection("friends")
+                              .doc(friendUid)
+                              .set(current);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Friend added successfully")));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("User not found")));
+                        }
+                      },
+                      child: const Text("Add Friend"),
+                    ),
+                  ],
+                ),
+              ),
               ElevatedButton(
                 child: const Text("Logout"),
                 onPressed: () {
@@ -126,54 +185,37 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  ElevatedButton addFriendButton(TextEditingController _friendUsernameTextController, BuildContext context) {
-    return ElevatedButton(
-                        onPressed: () async {
-                          final friendUsername =
-                              _friendUsernameTextController.text; //text
-                          final friendDoc = await db//search for the username, in users collection
-                              .collection("users")
-                              .where("username", isEqualTo: friendUsername)
-                              .get();
-                          if (friendDoc.docs.isNotEmpty) {//if friendusername found
-                            final friendUid = friendDoc.docs.first.id;//friend user id
-                            final currentUser = _auth.currentUser;//current user id
-                            final friend = <String, String>{
-                              "username" : _friendUsernameTextController.text,
-                            };
-                            final current = <String, String>{
-                              "username" : _username as String,
-                            };
-                            await db //add a friend to the user's collection
-                                .collection("friends")
-                                .doc(currentUser!.uid)
-                                .set(friend);
-                            await db
-                                .collection("friends")
-                                .doc(friendUid)
-                                .set(current);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content:
-                                        Text("Friend added successfully")));
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text("User not found")));
-                          }
-                        },
-                        child: const Text("Add Friend"),
-                      );
-  }
-
-  Future<String?> _getUsername() async {
+  Future<void> _fetchFriends() async {
     final user = _auth.currentUser;
     if (user != null) {
-      final doc = await db.collection('users').doc(user.uid).get();
+      final friendDocs = await db
+          .collection("users")
+          .doc(user.uid)
+          .collection("friends")
+          .get();
+      _friends = friendDocs.docs
+          .map((doc) => doc.data()['username'] as String)
+          .toList();
+      setState(() {});
+    }
+  }
+
+  Stream<String?> _getUsernameStream() async* {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
       if (doc.exists) {
-        return doc.data()?['username'];
+        yield doc.data()?['username'];
       }
     }
-    return null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchFriends();
   }
 }

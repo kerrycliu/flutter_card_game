@@ -3,6 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/Account/profile.dart';
+import 'package:flutter_application_1/pages/home.dart';
 import 'package:flutter_application_1/pages/reuseable.dart';
 
 import 'signup_screen.dart';
@@ -35,6 +36,12 @@ class _loginScreenState extends State<loginScreen> {
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.white),
+            ),
+            leading: BackButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomePage()));
+              },
             ),
           ),
           body: Container(
@@ -76,10 +83,8 @@ class _loginScreenState extends State<loginScreen> {
                               email: _emailTextController.text,
                               password: _passwordTextController.text)
                           .then((value) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Profile()));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Profile()));
                       }).onError((error, stackTrace) {
                         print("Error ${error.toString()}");
                       });

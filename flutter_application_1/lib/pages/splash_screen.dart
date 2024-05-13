@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(seconds: 3), () {
       //delay for 2 screens and then move to the main page
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const HomePage(),
+        builder: (context) => HomePage(),
       ));
     });
   }

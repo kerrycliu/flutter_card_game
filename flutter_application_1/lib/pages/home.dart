@@ -1,15 +1,18 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/Account/login_screen.dart';
+import 'package:flutter_application_1/pages/Account/profile.dart';
 import 'package:flutter_application_1/pages/reuseable.dart';
 import 'single_player.dart';
 import 'Multi/multiplayer.dart';
 import 'options.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,28 +35,24 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
-
         Center(
           child: Column(
               //home page buttons
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                
                 Padding(
                   padding: const EdgeInsets.fromLTRB(50, 10, 0, 10),
                   child: Container(
                     height: 225,
                     width: 350,
                     decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("images/MainLogo.png"),
-                        fit: BoxFit.fitWidth,
-                      )
-                    ),
+                        image: DecorationImage(
+                      image: AssetImage("images/MainLogo.png"),
+                      fit: BoxFit.fitWidth,
+                    )),
                   ),
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -65,16 +64,19 @@ class HomePage extends StatelessWidget {
                               builder: ((context) => const SinglePlayer())),
                         );
                       },
-                      child: CardButton("images/Cards/Spades/Rank=A, Suit=Spades.png",
-                          'Single', 'Player'), //Single Player Card
+                      child: CardButton(
+                          "images/Cards/Spades/Rank=A, Suit=Spades.png",
+                          'Single',
+                          'Player'), //Single Player Card
                     ),
-                              
                     GestureDetector(
                       onTap: () async {
                         final List<ConnectivityResult> connectivityResult =
                             await (Connectivity().checkConnectivity());
-                        if (connectivityResult.contains(ConnectivityResult.mobile) ||
-                            connectivityResult.contains(ConnectivityResult.wifi)) {
+                        if (connectivityResult
+                                .contains(ConnectivityResult.mobile) ||
+                            connectivityResult
+                                .contains(ConnectivityResult.wifi)) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -84,12 +86,13 @@ class HomePage extends StatelessWidget {
                           _showDialog(context);
                         }
                       },
-                      child: CardButton("images/Cards/Clubs/Rank=A, Suit=Clubs.png",
-                          'Multi', 'Player'), //Multi Player Card
+                      child: CardButton(
+                          "images/Cards/Clubs/Rank=A, Suit=Clubs.png",
+                          'Multi',
+                          'Player'), //Multi Player Card
                     ),
                   ],
                 ),
-          
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -100,17 +103,28 @@ class HomePage extends StatelessWidget {
                           MaterialPageRoute(builder: ((context) => Options())),
                         );
                       },
-                      child: CardButton("images/Cards/Heart/Rank=A, Suit=Heart.png",
-                          'Options', 'Options'), //Options Card
+                      child: CardButton(
+                          "images/Cards/Heart/Rank=A, Suit=Heart.png",
+                          'Options',
+                          'Options'), //Options Card
                     ),
-                              
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: ((context) => const loginScreen())),
-                        );
+                        final currentUser = _auth.currentUser;
+
+                        if (currentUser != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => const Profile())),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => const loginScreen())),
+                          );
+                        }
                       },
                       child: CardButton(
                           "images/Cards/Diamond/Rank=A, Suit=Diamond.png",
