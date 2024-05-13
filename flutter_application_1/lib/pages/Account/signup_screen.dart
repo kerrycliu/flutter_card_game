@@ -23,17 +23,17 @@ class _signUpPageState extends State<signUpPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.white.withOpacity(0.35),
+        backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(
-          color: Colors.black,
+          color: Colors.white,
         ),
         title: const Text(
           "Sign Up",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
       ),

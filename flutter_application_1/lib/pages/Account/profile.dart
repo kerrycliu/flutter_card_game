@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/pages/Account/login_screen.dart';
 import 'package:flutter_application_1/pages/home.dart';
 import 'package:flutter_application_1/pages/reuseable.dart';
@@ -22,6 +23,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -58,125 +60,131 @@ class _ProfileState extends State<Profile> {
           ),
           Column(
             children: [
-              Padding(
-                //user icon
-                padding: const EdgeInsets.all(65.0),
-                child: Container(
-                  height: 189.75, // height of the card
-                  width: 138.75, // width of the card
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("images/Cards/Joker.png"),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-              StreamBuilder<String?>(
-                stream: _getUsernameStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    _username = snapshot.data;
-                    return Text(
-                      _username ?? '',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
-              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text("Friends",style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold)
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _friends.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        margin: EdgeInsets.all(2),
-                        child: ListTile(
-                          title: Text(
-                            _friends[index],
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                  Padding(
+                    //user icon
+                    padding: const EdgeInsets.fromLTRB(100, 65, 100, 20),
+                    child: Container(
+                      height: 189.75, // height of the card
+                      width: 138.75, // width of the card
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("images/Cards/Joker.png"),
+                          fit: BoxFit.cover,
                         ),
-                      );
-                    },
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      StreamBuilder<String?>(
+                        stream: _getUsernameStream(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            _username = snapshot.data;
+                            return Text(
+                              _username ?? '',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
+                        },
+                      ),
+                      ElevatedButton(
+                        child: const Text("Logout"),
+                        onPressed: () {
+                          _auth.signOut().then((value) {
+                            print("Signed Out");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const loginScreen()));
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(50,10,50,10),
+                        child: reuseableTextField(
+                          "Enter Friend's Username",
+                          Icons.account_box_outlined,
+                          false,
+                          TextEditingController(),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final friendUsername = TextEditingController().text;
+                          final friendDoc = await db
+                              .collection("users")
+                              .where("username", isEqualTo: friendUsername)
+                              .get();
+                          if (friendDoc.docs.isNotEmpty) {
+                            final friendUid = friendDoc.docs.first.id;
+                            final currentUser = _auth.currentUser;
+                            final friend = <String, String>{
+                              "username": friendUsername,
+                            };
+                            final current = <String, String>{
+                              "username": _username as String,
+                            };
+                            await db
+                                .collection("friends")
+                                .doc(currentUser!.uid)
+                                .set(friend);
+                            await db
+                                .collection("friends")
+                                .doc(friendUid)
+                                .set(current);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text("Friend added successfully")));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("User not found")));
+                          }
+                        },
+                        child: const Text("Add Friend"),
+                      ),
+                      
+                      //list of friends
+                      SingleChildScrollView(
+                        child:
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: _friends.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                margin:
+                                    const EdgeInsets.fromLTRB(50, 15, 50, 0),
+                                child: ListTile(
+                                  title: Text(
+                                    _friends[index],
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                      ),
+                    ],
                   ),
                 ],
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(50, 10, 50, 20),
-                child: Column(
-                  children: [
-                    reuseableTextField(
-                      "Enter Friend's Username",
-                      Icons.account_box_outlined,
-                      false,
-                      TextEditingController(),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final friendUsername = TextEditingController().text;
-                        final friendDoc = await db
-                            .collection("users")
-                            .where("username", isEqualTo: friendUsername)
-                            .get();
-                        if (friendDoc.docs.isNotEmpty) {
-                          final friendUid = friendDoc.docs.first.id;
-                          final currentUser = _auth.currentUser;
-                          final friend = <String, String>{
-                            "username": friendUsername,
-                          };
-                          final current = <String, String>{
-                            "username": _username as String,
-                          };
-                          await db
-                              .collection("friends")
-                              .doc(currentUser!.uid)
-                              .set(friend);
-                          await db
-                              .collection("friends")
-                              .doc(friendUid)
-                              .set(current);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Friend added successfully")));
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("User not found")));
-                        }
-                      },
-                      child: const Text("Add Friend"),
-                    ),
-                  ],
-                ),
-              ),
-              ElevatedButton(
-                child: const Text("Logout"),
-                onPressed: () {
-                  _auth.signOut().then((value) {
-                    print("Signed Out");
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const loginScreen()));
-                  });
-                },
               ),
             ],
           ),
