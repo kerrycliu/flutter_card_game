@@ -102,6 +102,7 @@ class _signUpPageState extends State<signUpPage> {
                     String? fcmToken = await _getfcmToken();
                     if(fcmToken != null) {
                       user_token["fcm_token"] = fcmToken;
+                      user["fcm_token"] = fcmToken;
                     }
 
                     db.collection("users").doc(value.user!.uid).set(user);
