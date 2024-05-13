@@ -134,6 +134,7 @@ class _ProfileState extends State<Profile> {
                               .get();
                           if (friendDoc.docs.isNotEmpty) {
                             final friendUid = friendDoc.docs.first.id;
+                            final token = friendDoc.docs.first.data()['fcm_token'];
                             final currentUser = _auth.currentUser;
                             final friend = <String, String>{
                               "username": friendUsername,
@@ -154,7 +155,7 @@ class _ProfileState extends State<Profile> {
 
                             // Send a push notification to the friend
 
-                            final fcmToken = await db.collection("user_token").doc(friendUid).get();
+                            print(token);
 
                             await http.post(
                               Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -173,7 +174,7 @@ class _ProfileState extends State<Profile> {
                                   'id': '1',
                                   'status': 'done',
                                 },
-                                'to': fcmToken,
+                                'to': token,
                               }),
                             );
                             ScaffoldMessenger.of(context).showSnackBar(
