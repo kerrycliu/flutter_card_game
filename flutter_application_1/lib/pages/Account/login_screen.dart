@@ -3,6 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/Account/profile.dart';
+import 'package:flutter_application_1/pages/reuseable.dart';
 
 import 'signup_screen.dart';
 
@@ -150,37 +151,4 @@ class _loginScreenState extends State<loginScreen> {
       ),
     );
   }
-}
-
-TextField reuseableTextField(String text, IconData icon, bool isPasswordType,
-    TextEditingController controller) {
-  return TextField(
-    controller: controller,
-    obscureText: isPasswordType,
-    enableSuggestions: !isPasswordType,
-    autocorrect: !isPasswordType,
-    cursorColor: Colors.white,
-    style: TextStyle(color: Colors.white.withOpacity(1)),
-    decoration: InputDecoration(
-      prefixIcon: Icon(
-        icon,
-        color: Colors.white,
-      ),
-      labelText: text,
-      labelStyle: TextStyle(
-        color: Colors.white.withOpacity(0.9),
-        fontSize: 15,
-      ),
-      filled: true,
-      floatingLabelBehavior: FloatingLabelBehavior.never,
-      fillColor: Colors.white.withOpacity(0.1),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(5.0),
-        borderSide: const BorderSide(width: 0, style: BorderStyle.none),
-      ),
-    ),
-    keyboardType: isPasswordType
-        ? TextInputType.visiblePassword
-        : TextInputType.emailAddress,
-  );
 }
