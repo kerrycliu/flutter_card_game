@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -115,7 +117,7 @@ class _ProfileState extends State<Profile> {
                   Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(50,10,50,10),
+                        padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
                         child: reuseableTextField(
                           "Enter Friend's Username",
                           Icons.account_box_outlined,
@@ -149,40 +151,65 @@ class _ProfileState extends State<Profile> {
                                 .doc(friendUid)
                                 .collection("friends")
                                 .add(current);
+
+                            // Send a push notification to the friend
+
+                            final fcmToken = await db.collection("user_token").doc(friendUid).get();
+
+                            await http.post(
+                              Uri.parse('https://fcm.googleapis.com/fcm/send'),
+                              headers: <String, String>{
+                                'Content-Type': 'application/json',
+                                'Authorization': 'key=AAAAvfZmxIg:APA91bFYjcEFwiTWHRlxakxlHghVGhnPDGLJ7E8Cht3MhGrhYJWKsZ0dZbJdWUu-cdWziE7LromoEm-0ZvrZzwWp3LieC9_tSlMwhCXh7-xhxxg7voQhyiET1x3b78TVs-GXj-uSZvt-', // Replace with your server key from the Firebase console
+                              },
+                              body: jsonEncode(<String, dynamic>{
+                                'notification': <String, dynamic>{
+                                  'body': 'Someone has added you as a friend!',
+                                  'title': 'New Friend Added',
+                                },
+                                'priority': 'high',
+                                'data': <String, dynamic>{
+                                  'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+                                  'id': '1',
+                                  'status': 'done',
+                                },
+                                'to': fcmToken,
+                              }),
+                            );
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                    content: Text("Friend added successfully")));
+                                    content:
+                                        Text("Friend added successfully")));
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("User not found")));
+                                const SnackBar(
+                                    content: Text("User not found")));
                           }
                         },
                         child: const Text("Add Friend"),
                       ),
-                      
+
                       //list of friends
                       SingleChildScrollView(
-                        child:
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: _friends.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                margin:
-                                    const EdgeInsets.fromLTRB(50, 15, 50, 0),
-                                child: ListTile(
-                                  title: Text(
-                                    _friends[index],
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _friends.length,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              margin: const EdgeInsets.fromLTRB(50, 15, 50, 0),
+                              child: ListTile(
+                                title: Text(
+                                  _friends[index],
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              );
-                            },
-                          ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),

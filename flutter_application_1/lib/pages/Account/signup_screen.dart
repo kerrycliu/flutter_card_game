@@ -97,12 +97,15 @@ class _signUpPageState extends State<signUpPage> {
                       "password" : _passwordTextController.text,
                     };
 
+                    final user_token = <String, String>{};
+
                     String? fcmToken = await _getfcmToken();
                     if(fcmToken != null) {
-                      user["fcm_token"] = fcmToken;
+                      user_token["fcm_token"] = fcmToken;
                     }
 
                     db.collection("users").doc(value.user!.uid).set(user);
+                    db.collection("users_token").doc(value.user!.uid).set(user_token);
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Profile()));
                   }).onError((error, stackTrace) {
