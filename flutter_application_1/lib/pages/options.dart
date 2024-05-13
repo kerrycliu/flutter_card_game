@@ -1,9 +1,11 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/home.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Options extends StatefulWidget {
   const Options({super.key});
@@ -13,11 +15,93 @@ class Options extends StatefulWidget {
 }
 
 class _OptionsState extends State<Options> {
-  bool _hasPermission = false;
+  Position? _currentLocation;
+  bool _servicePermission = false;
+  LocationPermission? _permission;
+  String _currentAddress = "null";
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<Position> _getCurrentLocation() async {
+    try {
+      _servicePermission = await Geolocator.isLocationServiceEnabled();
+      if (!_servicePermission) {
+        print("Location service is disabled");
+        return Future.error("Location service is disabled");
+      }
+
+      _permission = await Geolocator.checkPermission();
+      if (_permission == LocationPermission.denied) {
+        _permission = await Geolocator.requestPermission();
+      }
+
+      return await Geolocator.getCurrentPosition();
+    } catch (e) {
+      print("Error getting current location: $e");
+      return Future.error("Error getting current location: $e");
+    }
+  }
+
+  Future<void> _getAddressFromCoordinates() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(_currentLocation!.latitude, _currentLocation!.longitude);
+
+      Placemark place = placemarks[0];
+
+      setState(() {
+        _currentAddress = "${place.street}, ${place.locality}";
+      });
+    } catch (e) {
+      print("Error getting address: $e");
+    }
+  }
+
+  Future<void> _getCoordinatesFromAddress() async {
+    try {
+      List<Location> location = await locationFromAddress(_currentAddress);
+
+      Location loc = location[0];
+
+      setState(() {
+        _currentLocation = Position(
+          longitude: loc.longitude, 
+          latitude: loc.latitude, 
+          timestamp: loc.timestamp, 
+          accuracy: 0, 
+          altitude: 0, 
+          altitudeAccuracy: 0, 
+          heading: 0, 
+          headingAccuracy: 0, 
+          speed: 0, 
+          speedAccuracy: 0);
+      });
+    } catch (e) {
+      print("Error getting addres coordinates: $e");
+    }
+  }
+
+  Future<void> _updateUserLocationInDatabase() async {
+    try {
+      // Assume you have a user ID stored in a variable called userId
+      final user = FirebaseAuth.instance.currentUser;
+      if(user != null){
+        await _firestore.collection("users").doc(user.uid).update({
+        "location": {
+          "latitude": _currentLocation!.latitude,
+          "longitude": _currentLocation!.longitude,
+          "address": _currentAddress,
+        },
+      });
+      }
+    } catch (e) {
+      print("Error updating user location in database: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -26,7 +110,7 @@ class _OptionsState extends State<Options> {
           color: Colors.white,
         ),
         title: const Text(
-          "Location",
+          "Profile",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -52,97 +136,105 @@ class _OptionsState extends State<Options> {
               ),
             ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              FutureBuilder<bool>(
-                future: _checkPermission(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    _hasPermission = snapshot.data!;
-                    if (_hasPermission) {
-                      return FutureBuilder<Position>(
-                        future: getUserLocation(),
-                        builder: (context, positionSnapshot) {
-                          if (positionSnapshot.hasError) {
-                            return Text('Error: ${positionSnapshot.error}');
-                          } else if (positionSnapshot.hasData) {
-                            return Column(
-                              children: [
-                                Text(
-                                  'Precise Location: ${positionSnapshot.data!.latitude}, ${positionSnapshot.data!.longitude}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                  ),
-                                ),
-                                FutureBuilder<List<Placemark>>(
-                                  future: _getAddressFromLatLng(positionSnapshot.data!),
-                                  builder: (context, addressSnapshot) {
-                                    if (addressSnapshot.hasError) {
-                                      return Text('Error: ${addressSnapshot.error}');
-                                    } else if (addressSnapshot.hasData) {
-                                      final placemark = addressSnapshot.data!.first;
-                                      return Text(
-                                        'Address: ${placemark.street}, ${placemark.subLocality}, ${placemark.locality}, ${placemark.administrativeArea}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 30,
-                                        ),
-                                      );
-                                    } else {
-                                      return const CircularProgressIndicator();
-                                    }
-                                  },
-                                ),
-                              ],
-                            );
-                          } else {
-                            return const CircularProgressIndicator();
-                          }
-                        },
-                      );
-                    } else {
-                      return Center(
-                        child: ElevatedButton(
-                          child: const Text('Grant Permission'),
-                          onPressed: () async {
-                            await Geolocator.requestPermission();
-                            setState(() {});
-                          },
+
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  "Coordinates",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                _buildLocationCoordinatesText(),
+                SizedBox(height: 30),
+                const Text(
+                  "Address",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                _buildLocationAddressText(),
+                SizedBox(height: 50),
+                _buildGetLocationButton(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(55, 5, 55, 5),
+                  child: TextField(
+                    onChanged: (value) {
+                      _currentAddress = value;
+                    },
+                    decoration: const InputDecoration(
+                      labelText: "Enter Address : Street",
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 10,
+                          color: Colors.white,
                         ),
-                      );
+                      ),
+                      labelStyle: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+          
+                ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      await _getCoordinatesFromAddress();
+                      await _updateUserLocationInDatabase();
                     }
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
-              ),
-            ],
+                    catch(e) {
+                      print("Error getting location: $e");
+                    }
+                  }, 
+                  child: Text("Enter Location")),
+          
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Future<bool> _checkPermission() async {
-    final permission = await Geolocator.checkPermission();
-    return permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse;
+  Widget _buildLocationCoordinatesText() {
+    return Text(
+      "Latitude = ${_currentLocation?.latitude}; \nLongitude = ${_currentLocation?.longitude}",
+      style: const TextStyle(
+        color: Colors.white,
+      ),
+    );
   }
 
-  Future<Position> getUserLocation() async {
-    final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.reduced);
-    return position;
+  Widget _buildLocationAddressText() {
+    return Text(
+      "${_currentAddress}",
+      style: const TextStyle(
+        color: Colors.white,
+      ),
+    );
   }
 
-  Future<List<Placemark>> _getAddressFromLatLng(Position position) async {
-    final placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
-    return placemarks;
+  Widget _buildGetLocationButton() {
+    return ElevatedButton(
+      onPressed: () async {
+        try {
+          _currentLocation = await _getCurrentLocation();
+          await _getAddressFromCoordinates();
+          print("${_currentLocation}");
+          await _updateUserLocationInDatabase();
+        } catch (e) {
+          print("Error getting location: $e");
+        }
+      },
+      child: Text("Get Location"),
+    );
   }
 }
