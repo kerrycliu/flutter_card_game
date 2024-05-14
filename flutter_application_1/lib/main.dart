@@ -9,23 +9,19 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
+  await Firebase.initializeApp(//init firebase
       options: const FirebaseOptions(
           apiKey: "AIzaSyAXAEWCWsUrSY3CN8YmEJzfRVDmNh-h9LE",
           appId: '1:815882749064:android:1d9519fb0988a37c8ecb3d',
           messagingSenderId: '815882749064',
           projectId: "kards-c7448",)
           );
-  await FirebaseAPi().initNotification();
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp,
-  //   DeviceOrientation.portraitDown,
-  // ]);
+  await FirebaseAPi().initNotification(); // init notif
   runApp(const myApp());
 }
 
 class myApp extends StatelessWidget {
-  // final GlobalKey<NavigatorState> navigatorKey;
+
   const myApp({super.key});
 
   @override

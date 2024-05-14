@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types, non_constant_identifier_names
+// ignore_for_file: camel_case_types, non_constant_identifier_names, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,100 +16,136 @@ class signUpPage extends StatefulWidget {
 
 class _signUpPageState extends State<signUpPage> {
   var db = FirebaseFirestore.instance;
-  final TextEditingController _passwordTextController = TextEditingController();
-  final TextEditingController _emailTextController = TextEditingController();
-  final TextEditingController _userNameTextController = TextEditingController();
+  final TextEditingController _passwordTextController = TextEditingController();//password var
+  final TextEditingController _emailTextController = TextEditingController();//email var
+  final TextEditingController _userNameTextController = TextEditingController();//username var
 
-  Future<String?> _getfcmToken() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    String? fcmToken = await messaging.getToken();
-    return fcmToken;
+  Future<String?> _getfcmToken() async {//function to get the device messageing token
+    FirebaseMessaging messaging = FirebaseMessaging.instance;//init lib
+    String? fcmToken = await messaging.getToken();//grab token
+    return fcmToken;//return token
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(
+      appBar: AppBar(//main body widget
+        backgroundColor: Colors.transparent,//appbar background to transparent
+        elevation: 0,//make it rest at the bottom
+
+        iconTheme: const IconThemeData(//icon edits
           color: Colors.white,
         ),
+
+
         title: const Text(
           "Sign Up",
-          style: TextStyle(
+          style: TextStyle(//font edits
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
+
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Color.fromRGBO(77, 0, 153, 1),
+      
+      body: Container(//main body
+
+        decoration: const BoxDecoration(//background image
+          color: Color.fromRGBO(77, 0, 153, 1),//base background color
           image: DecorationImage(
             image: AssetImage("images/login_bg.png"),
             fit: BoxFit.fill,
           ),
         ),
-        child: SingleChildScrollView(
-          child: Padding(
+
+        child: SingleChildScrollView(//make widgets into a scrollable item
+          child: Padding(//spacing
             padding: EdgeInsets.fromLTRB(
-                50, 250, 50, MediaQuery.of(context).size.height),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              50, 250, 50, MediaQuery.of(context).size.height
+            ),
+
+            child: Column(//set widgets into a column
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,//space them out evenly
+
               children: [
-                const Padding(
+                const Padding(//spacing
                   padding: EdgeInsets.all(8.0),
                   child: SizedBox(height: 5),
                 ),
-                reuseableTextField("Enter Email", Icons.email_outlined, false,
-                    _emailTextController),
-                const Padding(
+
+                reuseableTextField(//email input
+                  "Enter Email", 
+                  Icons.email_outlined, 
+                  false,
+                  _emailTextController
+                ),
+
+                const Padding(//spacing
                   padding: EdgeInsets.all(8.0),
                   child: SizedBox(height: 5),
                 ),
-                reuseableTextField("Enter Username", Icons.person_outline, false,
-                    _userNameTextController),
-                const Padding(
+
+                reuseableTextField(//username input
+                  "Enter Username", 
+                  Icons.person_outline, 
+                  false,
+                  _userNameTextController
+                ),
+
+                const Padding(//spacing
                   padding: EdgeInsets.all(8.0),
                   child: SizedBox(
                     height: 10,
                   ),
                 ),
-                reuseableTextField("Enter Password", Icons.lock_outline, true,
-                    _passwordTextController),
-                const Padding(
+
+                reuseableTextField(
+                  "Enter Password", 
+                  Icons.lock_outline, 
+                  true,
+                  _passwordTextController
+                ),
+
+                const Padding(//spacing
                   padding: EdgeInsets.all(8.0),
                   child: SizedBox(
                     height: 10,
                   ),
                 ),
-                LoginSigninButton(context, false, () {
-                  FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text)
-                      .then((value) async {
-                    final user = <String, String>{
-                      "username" : _userNameTextController.text,
-                      "email" : _emailTextController.text,
-                      "password" : _passwordTextController.text,
+
+                LoginSigninButton(context, false, () {//signup button
+                  FirebaseAuth.instance.createUserWithEmailAndPassword(//create user account with email and password
+                    email: _emailTextController.text,//email var
+                    password: _passwordTextController.text//password var
+                  )
+                  .then((value) async {//if successful
+
+                    final user = <String, String>{//create temp user class for the database
+                      "username" : _userNameTextController.text,//username var
+                      "email" : _emailTextController.text,//email var
+                      "password" : _passwordTextController.text,//password var
                     };
 
-                    final user_token = <String, String>{};
+                    final user_token = <String, String>{};//create temp token class for the database
 
-                    String? fcmToken = await _getfcmToken();
-                    if(fcmToken != null) {
-                      user_token["fcm_token"] = fcmToken;
-                      user["fcm_token"] = fcmToken;
+                    String? fcmToken = await _getfcmToken();//grab token
+
+                    if(fcmToken != null) {//if able to grab token
+                      user_token["fcm_token"] = fcmToken;//add to class
+                      user["fcm_token"] = fcmToken;//add to class
                     }
 
-                    db.collection("users").doc(value.user!.uid).set(user);
-                    db.collection("users_token").doc(value.user!.uid).set(user_token);
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Profile()));
-                  }).onError((error, stackTrace) {
+                    db.collection("users").doc(value.user!.uid).set(user);//add to db
+                    db.collection("users_token").doc(value.user!.uid).set(user_token);//add to db
+
+                    Navigator.push(
+                      context,
+                        MaterialPageRoute(builder: (context) => const Profile())//move user to the profile page
+                      );
+                  })
+                  .onError((error, stackTrace) {
                     print("Error ${error.toString()}");
                   });
                 }),

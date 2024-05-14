@@ -16,80 +16,112 @@ class loginScreen extends StatefulWidget {
 }
 
 class _loginScreenState extends State<loginScreen> {
-  final TextEditingController _passwordTextController = TextEditingController();
-  final TextEditingController _emailTextController = TextEditingController();
+  final TextEditingController _passwordTextController = TextEditingController(); //password variable
+  final TextEditingController _emailTextController = TextEditingController(); //email variable
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Stack(//for layering widgets
       children: [
-        Scaffold(
-          extendBodyBehindAppBar: true,
+        Scaffold(//main body widget
+          extendBodyBehindAppBar: true,//extends the background to the appbar
           appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            iconTheme: const IconThemeData(
+            backgroundColor: Colors.transparent,//appbar background to transparent
+            elevation: 0,//make it rest at the bottom
+
+            iconTheme: const IconThemeData(//icon edits
               color: Colors.white,
             ),
+
             title: const Text(
               "Login",
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+              style: TextStyle(//font edits
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white
+              ),
             ),
-            leading: BackButton(
+
+            leading: BackButton(//confirm is the user presses the back button that are moved to the homepage
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                  MaterialPageRoute(builder: (context) => HomePage())
+                );
               },
             ),
+
           ),
-          body: Container(
-            decoration: const BoxDecoration(
-              color: Color.fromRGBO(77, 0, 153, 1),
+
+          body: Container(//main body
+
+            decoration: const BoxDecoration(//background image
+              color: Color.fromRGBO(77, 0, 153, 1),//base background color
               image: DecorationImage(
                 image: AssetImage("images/login_bg.png"),
                 fit: BoxFit.cover,
               ),
             ),
-            child: SingleChildScrollView(
-              child: Padding(
+
+            child: SingleChildScrollView(//make widgets into a scrollable item
+              child: Padding(//spacing
                 padding: EdgeInsets.fromLTRB(
-                    50, 250, 50, MediaQuery.of(context).size.height),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  50, 250, 50, MediaQuery.of(context).size.height
+                ),
+
+                child: Column(//set widgets into a column
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,//space them out evenly
+
                   children: [
-                    const Padding(
+                    const Padding(//spacing
                       padding: EdgeInsets.all(8.0),
                       child: SizedBox(height: 5),
                     ),
-                    reuseableTextField("Enter Email", Icons.person_outline,
-                        false, _emailTextController),
-                    const Padding(
+
+                    reuseableTextField(//email input
+                      "Enter Email", 
+                      Icons.email_outlined,
+                      false,
+                      _emailTextController
+                    ),
+
+                    const Padding(//spacing
                       padding: EdgeInsets.all(8.0),
                       child: SizedBox(height: 5),
                     ),
-                    reuseableTextField("Enter Password", Icons.lock_outline,
-                        true, _passwordTextController),
-                    const Padding(
+
+                    reuseableTextField(//password input
+                      "Enter Password", 
+                      Icons.lock_outline,
+                      true, 
+                      _passwordTextController
+                    ),
+
+
+                    const Padding(//spacing
                       padding: EdgeInsets.all(8.0),
                       child: SizedBox(
                         height: 10,
                       ),
                     ),
-                    LoginSigninButton(context, true, () {
-                      FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
-                              email: _emailTextController.text,
-                              password: _passwordTextController.text)
-                          .then((value) {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Profile()));
-                      }).onError((error, stackTrace) {
-                        print("Error ${error.toString()}");
+
+                    LoginSigninButton(context, true, () {//login button
+                      FirebaseAuth.instance.signInWithEmailAndPassword(//auth function to check with the saved accounts
+                        email: _emailTextController.text,//email var
+                        password: _passwordTextController.text//password var
+                      )
+                      .then((value) {//if successfull
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Profile()) //move user to the profile screen
+                        );
+                      })
+
+                      .onError((error, stackTrace) {//else failed
+                        print("Error ${error.toString()}");//print to console
                       });
+
                     }),
-                    signUpOption(),
+
+                    signUpOption(),//sign up text
                   ],
                 ),
               ),
@@ -102,16 +134,19 @@ class _loginScreenState extends State<loginScreen> {
 
   Row signUpOption() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,//align to the center
       children: [
-        const Text(
+        const Text(//text
           "Dont have account?",
           style: TextStyle(color: Colors.white),
         ),
-        GestureDetector(
+
+        GestureDetector(//if the user clicks on the text
           onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const signUpPage()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const signUpPage())//move user to the signup page
+            );
           },
           child: const Text(
             " Sign Up",
@@ -119,41 +154,6 @@ class _loginScreenState extends State<loginScreen> {
           ),
         )
       ],
-    );
-  }
-
-  Container LoginSigninButton(
-      BuildContext context, bool isLogin, Function onTap) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50,
-      margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(90),
-      ),
-      child: ElevatedButton(
-        onPressed: () {
-          onTap();
-        },
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.resolveWith((states) {
-              if (states.contains(MaterialState.pressed)) {
-                return Colors.black;
-              }
-              return Colors.white;
-            }),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)))),
-        child: Text(
-          isLogin ? 'Login' : 'Sign Up',
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 10,
-          ),
-        ),
-      ),
     );
   }
 }

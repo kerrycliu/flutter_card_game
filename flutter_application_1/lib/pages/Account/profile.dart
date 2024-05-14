@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,41 +17,48 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  var db = FirebaseFirestore.instance;
-  String? _username;
-  List<String> _friends = [];
+  final FirebaseAuth _auth = FirebaseAuth.instance; //init auth
+  var db = FirebaseFirestore.instance;//init database
+  String? _username; //username string
+  List<String> _friends = []; //list of friends to display
 
-  final TextEditingController _friendTextController = TextEditingController();
+  final TextEditingController _friendTextController = TextEditingController();//friendusername var
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      extendBodyBehindAppBar: true,
+    return Scaffold(//main body widget
+      resizeToAvoidBottomInset: false,//so the screen dont change when the keyboard is pulled up
+      extendBodyBehindAppBar: true,//extend the background
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(
+        backgroundColor: Colors.transparent,//appbar background to transparent
+        elevation: 0,//make it rest at the bottom
+
+        iconTheme: const IconThemeData(//icon edits
           color: Colors.white,
         ),
+
         title: const Text(
           "Profile",
-          style: TextStyle(
+          style: TextStyle(//font edits
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        leading: BackButton(
+
+        leading: BackButton(//confirm is the user presses the back button that are moved to the homepage
           onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => HomePage()));
+            Navigator.push(context,
+              MaterialPageRoute(builder: (context) => HomePage())
+            );
           },
         ),
+
       ),
-      body: Stack(
+
+      body: Stack(//main body
         children: [
+
           Container(
             //background image
             decoration: const BoxDecoration(
@@ -60,12 +69,13 @@ class _ProfileState extends State<Profile> {
               ),
             ),
           ),
-          Column(
+
+          Column(//set widgets into a column
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Column(//set widgets into a column
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,//space object evenly
                 children: [
-                  Padding(
+                  Padding(//spacing
                     //user icon
                     padding: const EdgeInsets.fromLTRB(100, 65, 100, 20),
                     child: Container(
@@ -79,84 +89,96 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                  Row(//set widgets in a row
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,//space evenly
                     children: [
+                      //get username
                       StreamBuilder<String?>(
-                        stream: _getUsernameStream(),
+                        stream: _getUsernameStream(),//grabs username from database
                         builder: (context, snapshot) {
-                          if (snapshot.hasData) {
+                          if (snapshot.hasData) {//if username exists
                             _username = snapshot.data;
                             return Text(
-                              _username ?? '',
-                              style: const TextStyle(
+                              _username ?? '',//display username
+                              style: const TextStyle(//font edits
                                 color: Colors.white,
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
                               ),
                             );
-                          } else {
-                            return const CircularProgressIndicator();
+                          } 
+                          
+                          else {//if username doesnt exist
+                            return const CircularProgressIndicator();//show continous loader
                           }
                         },
                       ),
-                      ElevatedButton(
+
+                      ElevatedButton(//log out button
                         child: const Text("Logout"),
-                        onPressed: () {
-                          _auth.signOut().then((value) {
+                        onPressed: () {//when pressed
+                          _auth.signOut()//sign user out
+                          .then((value) {//if signout successfull
                             print("Signed Out");
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const loginScreen()));
+                                  builder: (context) => const loginScreen()//move the user to the home page
+                                )
+                            );
                           });
                         },
                       ),
                     ],
                   ),
-                  Column(
+
+                  Column(//sets widgets in a column
                     children: [
-                      Padding(
+                      Padding(//spacing
                         padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
-                        child: reuseableTextField(
+                        child: reuseableTextField(//friend username textfield
                           "Enter Friend's Username",
                           Icons.account_box_outlined,
                           false,
                           _friendTextController,
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          final friendUsername = _friendTextController.text;
-                          final friendDoc = await db
-                              .collection("users")
-                              .where("username", isEqualTo: friendUsername)
-                              .get();
-                          if (friendDoc.docs.isNotEmpty) {
-                            final friendUid = friendDoc.docs.first.id;
-                            final token = friendDoc.docs.first.data()['fcm_token'];
-                            final currentUser = _auth.currentUser;
-                            final friend = <String, String>{
+
+                      ElevatedButton(//add friend button
+                        onPressed: () async {//when pressed
+                          final friendUsername = _friendTextController.text;//friendusername var
+
+                          final friendDoc = await db//make a doc reference
+                          .collection("users")//table users
+                          .where("username", isEqualTo: friendUsername)//find matching username
+                          .get();//get page
+
+                          if (friendDoc.docs.isNotEmpty) {//if doc exists
+                            final friendUid = friendDoc.docs.first.id;//get the uid of the friend
+                            final token = friendDoc.docs.first.data()['fcm_token'];//get the fcmtoken for the user
+                            //token is used for the push notification
+                            final currentUser = _auth.currentUser;//grab current user uid
+
+                            final friend = <String, String>{//make temp friend class
                               "username": friendUsername,
                             };
-                            final current = <String, String>{
+                            final current = <String, String>{//make temp friend class
                               "username": _username as String,
                             };
-                            await db
-                                .collection("users")
-                                .doc(currentUser!.uid)
-                                .collection("friends")
-                                .add(friend);
-                            await db
-                                .collection("users")
-                                .doc(friendUid)
-                                .collection("friends")
-                                .add(current);
+                            await db//add to database
+                              .collection("users")//user table
+                              .doc(currentUser!.uid)//uid page
+                              .collection("friends")//friend table
+                              .add(friend);//add class
+
+                            await db//add to database
+                              .collection("users")//user table
+                              .doc(friendUid)//friend uid page
+                              .collection("friends")//friend table
+                              .add(current);//add class
 
                             // Send a push notification to the friend
-
-                            print(token);
-
                             await http.post(
                               Uri.parse('https://fcm.googleapis.com/fcm/send'),
                               headers: <String, String>{
@@ -177,17 +199,22 @@ class _ProfileState extends State<Profile> {
                                 'to': token,
                               }),
                             );
+
+                            ScaffoldMessenger.of(context).showSnackBar(//if adding friend is successfull
+                              const SnackBar(
+                                  content: Text("Friend added successfully")//display this message at the button
+                              )
+                            );
+                          } 
+                          else {//if anything above fails!
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                    content:
-                                        Text("Friend added successfully")));
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text("User not found")));
+                                  content: Text("User not found")//display this message at the bottom
+                                )
+                            );
                           }
                         },
-                        child: const Text("Add Friend"),
+                        child: const Text("Add Friend"),//button text
                       ),
 
                       //list of friends
@@ -223,7 +250,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Future<void> _fetchFriends() async {
+  Future<void> _fetchFriends() async {//function to grab friends from the database
     final user = _auth.currentUser;
     if (user != null) {
       final friendDocs = await db
@@ -238,7 +265,7 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  Stream<String?> _getUsernameStream() async* {
+  Stream<String?> _getUsernameStream() async* {//function to grba the current user's username from the database
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       final doc = await FirebaseFirestore.instance

@@ -4,9 +4,6 @@ import 'package:flutter_application_1/pages/home.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
-
-  static const String route = '/splash_screen';
-
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -15,13 +12,11 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
-    Future.delayed(const Duration(seconds: 3), () {
-      //delay for 2 screens and then move to the main page
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
+    Future.delayed(const Duration(seconds: 3), () {//delay for 3 screens and then move to the main page
+      Navigator.of(context).pushReplacement(MaterialPageRoute(//after delay reroute to homepage
         builder: (context) => HomePage(),
       ));
     });
@@ -41,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen>
               fit: BoxFit.fitWidth,
             ),
           ),
-          child: const Padding(
+          child: const Padding(//progress bar
             padding: EdgeInsets.fromLTRB(75, 50, 75, 125),
             child: Align(
               alignment: Alignment.bottomCenter,

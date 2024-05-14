@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,12 +38,12 @@ class HomePage extends StatelessWidget {
         Center(
           child: Column(
               //home page buttons
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,//space object evenly
+              crossAxisAlignment: CrossAxisAlignment.center,//center the objects
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(50, 10, 0, 10),
-                  child: Container(
+                  child: Container(//top logo for the home page
                     height: 225,
                     width: 350,
                     decoration: const BoxDecoration(
@@ -53,15 +53,18 @@ class HomePage extends StatelessWidget {
                     )),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                Row(//first row of buttons
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,//space them evenly
                   children: [
-                    GestureDetector(
+                    //singleplayer
+                    GestureDetector(//when the button is pressed on
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: ((context) => const SinglePlayer())),
+                            builder: ((context) => const SinglePlayer())//move the user to this page
+                          ), //
                         );
                       },
                       child: CardButton(
@@ -69,18 +72,20 @@ class HomePage extends StatelessWidget {
                           'Single',
                           'Player'), //Single Player Card
                     ),
-                    GestureDetector(
+
+                    //multiplayer
+                    GestureDetector(//when the button is pressed on
                       onTap: () async {
-                        final List<ConnectivityResult> connectivityResult =
-                            await (Connectivity().checkConnectivity());
-                        if (connectivityResult
-                                .contains(ConnectivityResult.mobile) ||
-                            connectivityResult
-                                .contains(ConnectivityResult.wifi)) {
+                        final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity()); //init connection
+                        if (
+                          connectivityResult.contains(ConnectivityResult.mobile) || //if the user is on mobile
+                          connectivityResult.contains(ConnectivityResult.wifi) //if the user is on wifi
+                          ) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: ((context) => const MultiPlayer())),
+                              builder: ((context) => const MultiPlayer())//move the user to this page
+                            ),
                           );
                         } else {
                           _showDialog(context);
@@ -93,14 +98,19 @@ class HomePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                Row(//second row of buttons
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,//space them evenly
                   children: [
+
+                    //option button 
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: ((context) => Options())),
+                          MaterialPageRoute(
+                            builder: ((context) => const Options())//move the user to this page
+                          ),
                         );
                       },
                       child: CardButton(
@@ -108,21 +118,24 @@ class HomePage extends StatelessWidget {
                           'Options',
                           'Options'), //Options Card
                     ),
+
+                    //profile button
                     GestureDetector(
                       onTap: () {
-                        final currentUser = _auth.currentUser;
-
-                        if (currentUser != null) {
+                        final currentUser = _auth.currentUser; //check if the user is logged in before
+                        if (currentUser != null) { //if the user has logged in
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: ((context) => const Profile())),
+                              builder: ((context) => const Profile())//move user to the profile page
+                            ),
                           );
-                        } else {
+                        } else {//user hasnt logged in before or has logged out
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: ((context) => const loginScreen())),
+                              builder: ((context) => const loginScreen())//move user to the login page
+                            ),
                           );
                         }
                       },
@@ -140,7 +153,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-void _showDialog(BuildContext context) {
+void _showDialog(BuildContext context) {//function to prompt the user to connect to the internet
   showDialog(
     context: context,
     builder: (BuildContext context) {
