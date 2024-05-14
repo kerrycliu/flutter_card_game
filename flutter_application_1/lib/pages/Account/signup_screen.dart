@@ -63,13 +63,13 @@ class _signUpPageState extends State<signUpPage> {
                   padding: EdgeInsets.all(8.0),
                   child: SizedBox(height: 5),
                 ),
-                reuseableTextField("Enter Email", Icons.person_outline, false,
+                reuseableTextField("Enter Email", Icons.email_outlined, false,
                     _emailTextController),
                 const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: SizedBox(height: 5),
                 ),
-                reuseableTextField("Enter Username", Icons.lock_outline, false,
+                reuseableTextField("Enter Username", Icons.person_outline, false,
                     _userNameTextController),
                 const Padding(
                   padding: EdgeInsets.all(8.0),

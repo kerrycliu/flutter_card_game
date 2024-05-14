@@ -2,9 +2,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/api/firebase_api.dart';
+import 'package:flutter_application_1/pages/Account/profile.dart';
 import 'package:flutter_application_1/pages/splash_screen.dart';
 
-import 'pages/Multi/multiplayer.dart';
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,22 +21,22 @@ void main() async {
   //   DeviceOrientation.portraitUp,
   //   DeviceOrientation.portraitDown,
   // ]);
-  runApp(myApp(navigatorKey: navigatorKey));
+  runApp(const myApp());
 }
 
 class myApp extends StatelessWidget {
-  final GlobalKey<NavigatorState> navigatorKey;
-  const myApp({super.key, required this.navigatorKey});
+  // final GlobalKey<NavigatorState> navigatorKey;
+  const myApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
-      routes: {
-        MultiPlayer.route: (context) => const MultiPlayer(),
-      },
       navigatorKey: navigatorKey,
+      routes: {
+        '/profile_screen': (context) =>const Profile(),
+      },
     );
   }
 }
