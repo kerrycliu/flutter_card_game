@@ -10,78 +10,206 @@ class GameBoard extends StatefulWidget {
 }
 
 class _GameBoardState extends State<GameBoard> {
-
   late Deck deck;
-
   List<Player> players = [
-    Player(hand: [], isBot: true, name: "Bot1",),
-    Player(hand: [], isBot: true, name: "Bot2",),
-    Player(hand: [], isBot: true, name: "Bot3",),
-    Player(hand: [], isBot: true, name: "Bot4",),
+    Player(
+      hand: [],
+      isBot: true,
+      name: "Bot1",
+    ),
+    Player(
+      hand: [],
+      isBot: true,
+      name: "Bot2",
+    ),
+    Player(
+      hand: [],
+      isBot: true,
+      name: "Bot3",
+    ),
+    Player(
+      hand: [],
+      isBot: true,
+      name: "Bot4",
+    ),
   ];
 
   @override
   void initState() {
     super.initState();
-    tempFunction();
+    _initGame();
   }
 
-  void tempFunction(){
+  void _initGame() {
     deck = Deck();
     deck.shuffle();
+    _dealCards();
+    _removePairsFromHands();
+  }
 
-    //deal cards
-    for(int i = 0; i < deck.cards.length; i++){
+  void _dealCards() {
+    for (int i = 0; i < deck.cards.length; i++) {
       players[i % 4].addCardToHand(deck.cards[i]);
     }
+  }
 
-    //remove pairs from hand
-    for(int i = 0; i < players.length; i++ ){
+  void _removePairsFromHands() {
+    for (int i = 0; i < players.length; i++) {
       players[i].removeAllPairs();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    if (players[0].hand.isEmpty) {
+      return const CircularProgressIndicator();
+    }
+
+    return Stack(
       children: [
-        Hand(hand : players[0].hand),
-        Hand(hand : players[1].hand),
-        Hand(hand : players[2].hand),
-        Hand(hand : players[3].hand),
+        Container(
+          color: const Color.fromRGBO(184, 170, 255, 100),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+
+                Row(//bottom
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List<Widget>.generate(players[2].hand.length, (int index) {
+                    return Draggable_Card(card: players[2].hand[index]);
+                  }),
+                ),
+          
+                Row(//sides
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List<Widget>.generate(players[1].hand.length, (int index) {
+                        return Draggable_CardH(card: players[1].hand[index]);
+                      }),
+                    ),
+
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List<Widget>.generate(players[3].hand.length, (int index) {
+                        return Draggable_CardH(card: players[3].hand[index]);
+                      }),
+                    ),
+                  ],
+                ),
+          
+                Row(//top
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List<Widget>.generate(players[0].hand.length, (int index) {
+                    return Draggable_Card(card: players[0].hand[index]);
+                  }),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        //Draggable_Card(card: players[0].hand[0],),
       ],
     );
   }
 }
 
-class Hand extends StatelessWidget {
-  final List<CardModel> hand;
+class Draggable_Card extends StatelessWidget {
+  const Draggable_Card({
+    super.key,
+    required this.card,
+  });
 
-  Hand({required this.hand});
+  final CardModel card;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: hand.map((card) => CardWidget(card: card)).toList(),
+    return Draggable(
+      feedback: Transform.translate(
+        offset: const Offset(0, 0),
+        child: CardContainer(card: card),
+      ),
+      childWhenDragging: Container(),
+      child: CardContainer(card: card),
     );
   }
 }
 
-class CardWidget extends StatelessWidget {
+class Draggable_CardH extends StatelessWidget {
+  const Draggable_CardH({
+    super.key,
+    required this.card,
+  });
+
   final CardModel card;
 
-  CardWidget({required this.card});
+  @override
+  Widget build(BuildContext context) {
+    return Draggable(
+      feedback: Transform.translate(
+        offset: const Offset(0, 0),
+        child: CardContainerH(card: card),
+      ),
+      childWhenDragging: Container(),
+      child: CardContainerH(card: card),
+    );
+  }
+}
+
+class CardContainer extends StatelessWidget {
+  const CardContainer({
+    super.key,
+    required this.card,
+  });
+
+  final CardModel card;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 55,
-      height: 210,
+      width: 55/1.25,
+      height: 75/1.25,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.white, width : 0.6),
+        border: Border.all(color: Colors.white, width: 0.6),
+        image: DecorationImage(
+          image: AssetImage(card.imagePath),
+          fit: BoxFit.fill,
+          )
       ),
-      child: Image.asset(card.imagePath),
+    );
+  }
+}
+
+class CardContainerH extends StatelessWidget {
+  const CardContainerH({
+    super.key,
+    required this.card,
+  });
+
+  final CardModel card;
+
+  @override
+  Widget build(BuildContext context) {
+    return RotatedBox(
+      quarterTurns: 1,
+      child: Container(
+        width: 55/1.25,
+        height: 75/1.25,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white, width: 0.6),
+          image: DecorationImage(
+            image: AssetImage(card.imagePath),
+            fit: BoxFit.fill,
+            )
+        ),
+      ),
     );
   }
 }

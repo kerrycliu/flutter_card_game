@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/api/firebase_api.dart';
 import 'package:flutter_application_1/pages/Account/profile.dart';
 import 'package:flutter_application_1/pages/splash_screen.dart';
@@ -19,6 +20,7 @@ void main() async {
   await FirebaseAPi().initNotification(); // init notif
 
   runApp(const myApp());
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
 }
 
 class myApp extends StatelessWidget {

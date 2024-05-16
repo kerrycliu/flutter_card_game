@@ -12,13 +12,11 @@ class Player extends ChangeNotifier{
   // Function to add a card to the player's hand
   void addCardToHand(CardModel card) {
     hand.add(card);
-    notifyListeners();
   }
 
   // Function to remove a card from the player's hand
   void removeCardFromHand(CardModel card) {
     hand.remove(card);
-    notifyListeners();
   }
 
   // Function to get the number of cards in the player's hand

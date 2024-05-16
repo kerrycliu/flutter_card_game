@@ -9,17 +9,18 @@ class SinglePlayer extends StatelessWidget {
     return Stack(
       children: [
         Scaffold(
-          appBar: AppBar(
-            title: const Text("Gaming"),
-            actions: [
-              TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "Testing Game",
-                    style: TextStyle(color: Colors.white),
-                  ))
-            ],
-          ),
+          resizeToAvoidBottomInset: false,
+          // appBar: AppBar(
+          //   title: const Text("Gaming"),
+          //   actions: [
+          //     TextButton(
+          //         onPressed: () {},
+          //         child: const Text(
+          //           "Testing Game",
+          //           style: TextStyle(color: Colors.white),
+          //         ))
+          //   ],
+          // ),
           body: const GameBoard(),
         ),
       ],
