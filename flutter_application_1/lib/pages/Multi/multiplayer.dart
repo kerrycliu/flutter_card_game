@@ -39,6 +39,7 @@ class MultiPlayer extends StatelessWidget {
           },
           child: Back_button(), //fix this for the background to be fixed
         ),
+        
         Center(
           child: Column(
               //buttons

@@ -45,7 +45,6 @@ class _ProfileState extends State<Profile> {
             color: Colors.white,
           ),
         ),
-
         leading: BackButton(//confirm is the user presses the back button that are moved to the homepage
           onPressed: () {
             Navigator.push(context,

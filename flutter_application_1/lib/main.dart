@@ -17,6 +17,7 @@ void main() async {
           projectId: "kards-c7448",)
           );
   await FirebaseAPi().initNotification(); // init notif
+
   runApp(const myApp());
 }
 
@@ -26,7 +27,9 @@ class myApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
+
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
       navigatorKey: navigatorKey,

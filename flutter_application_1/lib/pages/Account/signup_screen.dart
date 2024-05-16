@@ -15,6 +15,7 @@ class signUpPage extends StatefulWidget {
 }
 
 class _signUpPageState extends State<signUpPage> {
+
   var db = FirebaseFirestore.instance;
   final TextEditingController _passwordTextController = TextEditingController();//password var
   final TextEditingController _emailTextController = TextEditingController();//email var
@@ -157,3 +158,4 @@ class _signUpPageState extends State<signUpPage> {
     );
   }
 }
+
