@@ -1,16 +1,21 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/pages/home.dart';
 import 'Host.dart';
 import 'Join.dart';
 
 class MultiPlayer extends StatelessWidget {
   const MultiPlayer({super.key});
+  static const String route = '/multiplayer';
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Multiplayer_Stack(context));
+    return Scaffold(
+      backgroundColor: const Color.fromRGBO(184, 170, 255, 100),
+      body: Multiplayer_Stack(context)
+      );
   }
 
   Stack Multiplayer_Stack(BuildContext context) {
@@ -20,7 +25,7 @@ class MultiPlayer extends StatelessWidget {
           //container for the background image
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("images/background.png"),
+              image: AssetImage("images/Vertical_BG.png"),
               fit: BoxFit.cover,
             ),
           ),
@@ -29,36 +34,39 @@ class MultiPlayer extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: ((context) => const HomePage())),
+              MaterialPageRoute(builder: ((context) => HomePage())),
             );
           },
           child: Back_button(), //fix this for the background to be fixed
         ),
-        Row(
-            //buttons
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: ((context) => const Host())),
-                  );
-                },
-                child: CardButton("images/Cards/Clubs/Rank=K, Suit=Clubs.png",
-                    'Host', 'Host'), //Host Card
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: ((context) => const Join())),
-                  );
-                },
-                child: CardButton("images/Cards/Clubs/Rank=Q, Suit=Clubs.png",
-                    'Join', 'Join'), //Join Card
-              ),
-            ]),
+        
+        Center(
+          child: Column(
+              //buttons
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: ((context) => const Host())),
+                    );
+                  },
+                  child: CardButton("images/Cards/Clubs/Rank=K, Suit=Clubs.png",
+                      'Host', 'Host'), //Host Card
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: ((context) => const Join())),
+                    );
+                  },
+                  child: CardButton("images/Cards/Clubs/Rank=Q, Suit=Clubs.png",
+                      'Join', 'Join'), //Join Card
+                ),
+              ]),
+        ),
       ],
     );
   }

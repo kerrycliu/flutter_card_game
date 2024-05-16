@@ -3,6 +3,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/Account/profile.dart';
+import 'package:flutter_application_1/pages/home.dart';
+import 'package:flutter_application_1/pages/reuseable.dart';
 
 import 'signup_screen.dart';
 
@@ -14,59 +16,113 @@ class loginScreen extends StatefulWidget {
 }
 
 class _loginScreenState extends State<loginScreen> {
-  final TextEditingController _passwordTextController = TextEditingController();
-  final TextEditingController _emailTextController = TextEditingController();
+
+  final TextEditingController _passwordTextController = TextEditingController(); //password variable
+  final TextEditingController _emailTextController = TextEditingController(); //email variable
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Stack(//for layering widgets
       children: [
-        Scaffold(
-          body: Container(
-            decoration: const BoxDecoration(
-              color: Color.fromRGBO(77, 0, 153, 1),
-              image: DecorationImage(
-                image: AssetImage("images/login_bg.png"),
-                fit: BoxFit.fill,
+        Scaffold(//main body widget
+          extendBodyBehindAppBar: true,//extends the background to the appbar
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,//appbar background to transparent
+            elevation: 0,//make it rest at the bottom
+
+            iconTheme: const IconThemeData(//icon edits
+              color: Colors.white,
+            ),
+
+            title: const Text(
+              "Login",
+              style: TextStyle(//font edits
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white
               ),
             ),
-            child: SingleChildScrollView(
-              child: Padding(
+
+            leading: BackButton(//confirm is the user presses the back button that are moved to the homepage
+              onPressed: () {
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => HomePage())
+                );
+              },
+            ),
+
+          ),
+
+          body: Container(//main body
+
+            decoration: const BoxDecoration(//background image
+              color: Color.fromRGBO(77, 0, 153, 1),//base background color
+              image: DecorationImage(
+                image: AssetImage("images/login_bg.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
+
+            child: SingleChildScrollView(//make widgets into a scrollable item
+              child: Padding(//spacing
                 padding: EdgeInsets.fromLTRB(
-                    250, MediaQuery.of(context).size.height * 0.25, 250, 30),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  50, 250, 50, MediaQuery.of(context).size.height
+                ),
+
+                child: Column(//set widgets into a column
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,//space them out evenly
+
                   children: [
-                    const Padding(
+                    const Padding(//spacing
                       padding: EdgeInsets.all(8.0),
                       child: SizedBox(height: 5),
                     ),
-                    reuseableTextField("Enter Email", Icons.person_outline,
-                        false, _emailTextController),
-                    const Padding(
+
+                    reuseableTextField(//email input
+                      "Enter Email", 
+                      Icons.email_outlined,
+                      false,
+                      _emailTextController
+                    ),
+
+                    const Padding(//spacing
                       padding: EdgeInsets.all(8.0),
                       child: SizedBox(height: 5),
                     ),
-                    reuseableTextField("Enter Password", Icons.lock_outline,
-                        true, _passwordTextController),
-                    const Padding(
+
+                    reuseableTextField(//password input
+                      "Enter Password", 
+                      Icons.lock_outline,
+                      true, 
+                      _passwordTextController
+                    ),
+
+
+                    const Padding(//spacing
                       padding: EdgeInsets.all(8.0),
                       child: SizedBox(
                         height: 10,
                       ),
                     ),
-                    LoginSigninButton(context, true, () {
-                      FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text).then((value) {
-                            Navigator.push(
+
+                    LoginSigninButton(context, true, () {//login button
+                      FirebaseAuth.instance.signInWithEmailAndPassword(//auth function to check with the saved accounts
+                        email: _emailTextController.text,//email var
+                        password: _passwordTextController.text//password var
+                      )
+                      .then((value) {//if successfull
+                        Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const Profile()));
-                          }).onError((error, stackTrace){
-                            print("Error ${error.toString()}");
-                          });
+                          MaterialPageRoute(builder: (context) => const Profile()) //move user to the profile screen
+                        );
+                      })
+
+                      .onError((error, stackTrace) {//else failed
+                        print("Error ${error.toString()}");//print to console
+                      });
+
                     }),
-                    signUpOption(),
+
+                    signUpOption(),//sign up text
                   ],
                 ),
               ),
@@ -79,16 +135,19 @@ class _loginScreenState extends State<loginScreen> {
 
   Row signUpOption() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,//align to the center
       children: [
-        const Text(
+        const Text(//text
           "Dont have account?",
           style: TextStyle(color: Colors.white),
         ),
-        GestureDetector(
+
+        GestureDetector(//if the user clicks on the text
           onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const signUpPage()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const signUpPage())//move user to the signup page
+            );
           },
           child: const Text(
             " Sign Up",
@@ -98,72 +157,4 @@ class _loginScreenState extends State<loginScreen> {
       ],
     );
   }
-
-  Container LoginSigninButton(
-      BuildContext context, bool isLogin, Function onTap) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50,
-      margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(90),
-      ),
-      child: ElevatedButton(
-        onPressed: () {
-          onTap();
-        },
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.resolveWith((states) {
-              if (states.contains(MaterialState.pressed)) {
-                return Colors.black;
-              }
-              return Colors.white;
-            }),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)))),
-        child: Text(
-          isLogin ? 'Login' : 'Sign Up',
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 10,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-TextField reuseableTextField(String text, IconData icon, bool isPasswordType,
-    TextEditingController controller) {
-  return TextField(
-    controller: controller,
-    obscureText: isPasswordType,
-    enableSuggestions: !isPasswordType,
-    autocorrect: !isPasswordType,
-    cursorColor: Colors.white,
-    style: TextStyle(color: Colors.white.withOpacity(1)),
-    decoration: InputDecoration(
-      prefixIcon: Icon(
-        icon,
-        color: Colors.white,
-      ),
-      labelText: text,
-      labelStyle: TextStyle(
-        color: Colors.white.withOpacity(0.9),
-        fontSize: 15,
-      ),
-      filled: true,
-      floatingLabelBehavior: FloatingLabelBehavior.never,
-      fillColor: Colors.white.withOpacity(0.1),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(5.0),
-        borderSide: const BorderSide(width: 0, style: BorderStyle.none),
-      ),
-    ),
-    keyboardType: isPasswordType
-        ? TextInputType.visiblePassword
-        : TextInputType.emailAddress,
-  );
 }
